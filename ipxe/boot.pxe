@@ -7,7 +7,7 @@ set flavor virt
 
 set cmd modules=loop,squashfs quiet nomodeset
 set console console=tty0
-set apkovl apkovl=
+set apkovl apkovl=https://github.com/ursa-bygrove/alpine-latest-stable/raw/master/ipxe/apkovl.tar.gz
 
 set img-url ${mirror}/${branch}/releases/${arch}/netboot
 set alpine_repo alpine_repo=${mirror}/${branch}/main
