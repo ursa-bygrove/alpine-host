@@ -1,0 +1,30 @@
+name: Update pre-release
+run-name: Deploy by @${{ github.actor }}
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  boot-pxe:
+    name: Release boot.pxe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+  apkovl-pxe:
+    name: Release apkovl-pxe.tar.gz
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: tar cvzf apkovl-pxe.tar.gz -C apkovl/pxe --owner=0 --group=0
+      - uses: "marvinpinto/action-automatic-releases@v1"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            boot.pxe
+            apkovl-*.tar.gz
