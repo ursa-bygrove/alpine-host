@@ -19,12 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: tar cvzf apkovl-pxe.tar.gz -C apkovl/pxe --owner=0 --group=0
-      - uses: "marvinpinto/action-automatic-releases@v1"
+      - uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          name: Development Build
+          tag: latest 
+          generateReleaseNotes: true
+          artifacts: "boot.pxe,apkovl-*.tar.gz"
+          artifactErrorsFailBuild: true
+          makeLatest: true
           prerelease: true
-          title: "Development Build"
-          files: |
-            boot.pxe
-            apkovl-*.tar.gz
