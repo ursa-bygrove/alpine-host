@@ -1,0 +1,2 @@
+#!/bin/sh
+setup-alpine -f /root/setup-alpine.answers
