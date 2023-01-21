@@ -27,5 +27,5 @@ jobs:
           generateReleaseNotes: true
           artifacts: "boot.pxe,apkovl-*.tar.gz"
           artifactErrorsFailBuild: true
-          makeLatest: true
+          makeLatest: false
           prerelease: true
