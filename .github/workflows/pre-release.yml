@@ -23,7 +23,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           name: Development Build
-          tag: latest 
+          tag: pre-release
           generateReleaseNotes: true
           artifacts: "boot.pxe,apkovl-*.tar.gz"
           artifactErrorsFailBuild: true
