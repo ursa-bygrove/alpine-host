@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: tree
-      - run: tar cvzf apkovl-pxe.tar.gz -C apkovl/pxe --owner=0 --group=0
+      - run: tar cvzf apkovl-pxe.tar.gz apkovl/pxe -C apkovl/pxe --owner=0 --group=0
       - uses: ncipollo/release-action@v1
         with:
           name: Development Build
