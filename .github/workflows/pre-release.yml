@@ -1,5 +1,5 @@
 name: Update pre-release
-run-name: Deploy by @${{ github.actor }}
+run-name: Deployed by @${{ github.actor }}
 
 on: 
   push:
@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: tree
       - run: tar cvzf apkovl-pxe.tar.gz -C apkovl/pxe --owner=0 --group=0
       - uses: ncipollo/release-action@v1
         with:
