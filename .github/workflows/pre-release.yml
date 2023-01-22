@@ -22,7 +22,7 @@ jobs:
           generateReleaseNotes: true
 
           tag: pre-release
-          makeLatest: true
+          makeLatest: false
           prerelease: true
           
           artifacts: "boot.pxe,apkovl-*.tar.gz"
