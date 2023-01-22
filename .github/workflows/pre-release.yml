@@ -15,11 +15,13 @@ jobs:
         with:
           name: Release Candidate
           generateReleaseNotes: true
+          artifacts: "boot.pxe,apkovl-*.tar.gz"
+          artifactErrorsFailBuild: true
 
           tag: pre-release
           makeLatest: false
           prerelease: true
           allowUpdates: true
-          
-          artifacts: "boot.pxe,apkovl-*.tar.gz"
-          artifactErrorsFailBuild: true
+          omitNameDuringUpdate: false
+          omitBodyDuringUpdate: false
+          removeArtifacts: true
