@@ -1,31 +1,29 @@
 name: Update pre-release
-run-name: Deployed by @${{ github.actor }}
-
 on: 
   push:
     branches: 
       - master
 
 jobs:
-  boot-pxe:
-    name: Release boot.pxe
+  pre-release:
+    name: Update pre-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-  apkovl-pxe:
-    name: Release apkovl-pxe.tar.gz
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: tree
+      - run: |
+        FIRST="$(git rev-list --abbrev-commit --max-parents=0 HEAD)"
+        LATEST=""
+        git log --pretty="- [[%h](${{github.repositoryUrl}}/commit/%h)] %s" "${LATEST:-$FIRST}..${{github.sha}}" > RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
-          name: Development Build
-          tag: pre-release
+          name: Release Candidate
+          bodyFile: RELEASE.md
           generateReleaseNotes: true
+
+          tag: pre-release
+          makeLatest: true
+          prerelease: true
+          
           artifacts: "boot.pxe,apkovl-*.tar.gz"
           artifactErrorsFailBuild: true
-          makeLatest: false
-          prerelease: true
