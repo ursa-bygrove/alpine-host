@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-        FIRST="$(git rev-list --abbrev-commit --max-parents=0 HEAD)"
-        LATEST=""
-        git log --pretty="- [[%h](${{github.repositoryUrl}}/commit/%h)] %s" "${LATEST:-$FIRST}..${{github.sha}}" > RELEASE.md
+          FIRST="$(git rev-list --abbrev-commit --max-parents=0 HEAD)"
+          LATEST=""
+          git log --pretty="- [[%h](${{github.repositoryUrl}}/commit/%h)] %s" "${LATEST:-$FIRST}..${{github.sha}}" > RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
