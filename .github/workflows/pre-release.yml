@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create release documentation
         run: |
+          git rev-list --abbrev-commit --max-parents=0 HEAD
           FIRST="$(git rev-list --abbrev-commit --max-parents=0 HEAD)"
           LATEST=""
           echo "FIRST: ${FIRST}"
