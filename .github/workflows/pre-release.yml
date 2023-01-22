@@ -22,6 +22,4 @@ jobs:
           makeLatest: false
           prerelease: true
           allowUpdates: true
-          omitNameDuringUpdate: false
-          omitBodyDuringUpdate: false
           removeArtifacts: true
