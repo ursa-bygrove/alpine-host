@@ -14,11 +14,8 @@ jobs:
         run: |
           FIRST="8c6e787"
           LATEST=""
-          echo "FIRST: ${FIRST}"
-          echo "LATEST: ${LATEST}"
-          echo git log --pretty="- [[%h]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/%h)] %s" "${LATEST:-$FIRST}..${GITHUB_SHA}"
-          ls -l RELEASE.md
-          cat RELEASE.md
+          FORMAT="- [[%h]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/%h)] %s"
+          git log --pretty="${FORMAT}" "${LATEST:-$FIRST}..${GITHUB_SHA}" > RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
