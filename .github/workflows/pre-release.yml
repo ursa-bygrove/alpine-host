@@ -16,7 +16,7 @@ jobs:
           LATEST=""
           echo "FIRST: ${FIRST}"
           echo "LATEST: ${LATEST}"
-          git log --pretty="- [[%h](${{github.repositoryUrl}}/commit/%h)] %s" "${LATEST:-$FIRST}..${{github.sha}}" > RELEASE.md
+          git log --pretty="- [[%h]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/%h)] %s" "${LATEST:-$FIRST}..${GITHUB_SHA}" > RELEASE.md
           ls -l RELEASE.md
           cat RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
