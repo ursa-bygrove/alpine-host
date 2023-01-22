@@ -12,10 +12,12 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create release documentation
         env:
+          DEBUG: ${{ toJson(github) }}
           FIRST_SHA: 8c6e787
           LATEST_SHA: 
           RELEASE_FORMAT: "- [[%h]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/%h)] %s"
         run: |
+          echo ${DEBUG} | jq
           git log --pretty="${RELEASE_FORMAT}" ${LATEST_SHA:-$FIRST_SHA}..${GITHUB_SHA} > RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
