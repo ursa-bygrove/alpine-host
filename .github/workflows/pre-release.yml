@@ -17,7 +17,9 @@ jobs:
           LATEST_SHA: 
           RELEASE_FORMAT: "- [[%h]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/%h)] %s"
         run: |
+          git log --oneline
           echo ${DEBUG} | jq
+          sleep 1
           git log --pretty="${RELEASE_FORMAT}" ${LATEST_SHA:-$FIRST_SHA}..${GITHUB_SHA} > RELEASE.md
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
