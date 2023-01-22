@@ -19,11 +19,12 @@ jobs:
         with:
           name: Release Candidate
           bodyFile: RELEASE.md
-          generateReleaseNotes: true
+          generateReleaseNotes: false
 
           tag: pre-release
           makeLatest: false
           prerelease: true
+          allowUpdates: true
           
           artifacts: "boot.pxe,apkovl-*.tar.gz"
           artifactErrorsFailBuild: true
