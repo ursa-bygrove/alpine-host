@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
+      - run: tar cvzf apkovl-sys.tar.gz --owner=0 --group=0 -C apkovl/sys .
       - uses: ncipollo/release-action@v1
         with:
           name: Release Candidate
