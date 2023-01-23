@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: tar cvzf apkovl/pxe/root/apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
-      - run: tar cvzf apkovl.tar.gz --owner=0 --group=0 -C apkovl/pxe .
+      - name: Create overlay files
+        run: |
+          tar czf apkovl/pxe/root/apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
+          tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
           name: Release Candidate

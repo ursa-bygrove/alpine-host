@@ -1,5 +1,5 @@
 # Configure your keyboard
-KEYMAPOPTS="us mac"
+KEYMAPOPTS="us-mac"
 
 # Set hostname
 HOSTNAMEOPTS=alpine-latest-stable
