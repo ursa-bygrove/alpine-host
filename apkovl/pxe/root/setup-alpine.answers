@@ -29,14 +29,10 @@ PROXYOPTS=none
 APKREPOSOPTS="-c -1"
 
 # Create admin user
-#USEROPTS="-a -u -g audio,video,netdev juser"
-#USERSSHKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIiHcbg/7ytfLFHUNLRgEAubFz/13SwXBOM/05GNZe4 juser@example.com"
-#USERSSHKEY="https://example.com/juser.keys"
+USEROPTS="-u -k none development"
 
 # Install Openssh
-SSHDOPTS=openssh
-#ROOTSSHKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIiHcbg/7ytfLFHUNLRgEAubFz/13SwXBOM/05GNZe4 juser@example.com"
-#ROOTSSHKEY="https://example.com/juser.keys"
+SSHDOPTS="-k none openssh"
 
 # Use openntpd
 NTPOPTS="openntpd"
