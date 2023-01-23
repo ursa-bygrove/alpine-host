@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create overlay files
         run: |
+          chmod 755 apkovl/pxe/etc/local.d/*
           tar czf apkovl/pxe/root/apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
           tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
