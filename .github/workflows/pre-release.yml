@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: tar cvzf apkovl-pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
-      - run: tar cvzf apkovl-sys.tar.gz --owner=0 --group=0 -C apkovl/sys .
+      - run: tar cvzf apkovl/pxe/root/apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
+      - run: tar cvzf apkovl.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
           name: Release Candidate
           generateReleaseNotes: true
-          artifacts: "boot.pxe,apkovl-*.tar.gz"
+          artifacts: "boot.pxe,apkovl.tar.gz"
           artifactErrorsFailBuild: true
 
           tag: pre-release
