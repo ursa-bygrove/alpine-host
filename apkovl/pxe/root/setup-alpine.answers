@@ -38,7 +38,7 @@ SSHDOPTS="-k none openssh"
 NTPOPTS="openntpd"
 
 # Prepare and install filesystem on disk
-DISKOPTS="-m sys -o /root/apkovl.tar.gz /dev/vda"
+DISKOPTS="-m sys -o https://github.com/ursa-bygrove/alpine-latest-stable/releases/download/pre-release/pxe.apkovl.tar.gz /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
 #LBUOPTS="LABEL=APKOVL"
