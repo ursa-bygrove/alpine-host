@@ -1,2 +1,2 @@
 #!/bin/sh
-setup-alpine -e -f /root/setup-alpine.answers
+echo y | setup-alpine -e -f /root/setup-alpine.answers
