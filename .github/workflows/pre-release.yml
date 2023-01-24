@@ -13,13 +13,15 @@ jobs:
       - name: Create overlay files
         run: |
           chmod 755 apkovl/pxe/etc/local.d/*
-          tar czf apkovl/sys.tar.gz --owner=0 --group=0 -C apkovl/sys .
-          tar czf apkovl/pxe.tar.gz --owner=0 --group=0 -C apkovl/pxe .
+          mkdir dist
+          for i in boot/*.pxe; do cp $i dist/$(basename $i .pxe)-boot.pxe; done
+          tar czf dist/sys.apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
+          tar czf dist/pxe.apkovl.tar.gz --owner=0 --group=0 -C apkovl/pxe .
       - uses: ncipollo/release-action@v1
         with:
           name: Release Candidate
           generateReleaseNotes: true
-          artifacts: "boot/*.pxe,apkovl/*.tar.gz"
+          artifacts: "dist/*"
           artifactErrorsFailBuild: true
 
           tag: pre-release
