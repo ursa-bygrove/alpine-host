@@ -41,10 +41,7 @@ NTPOPTS="openntpd"
 DISKOPTS="-m sys -o https://github.com/ursa-bygrove/alpine-latest-stable/releases/download/pre-release/pxe.apkovl.tar.gz /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
-#LBUOPTS="LABEL=APKOVL"
 LBUOPTS=none
 
 # Setup apk cache, only used for "data" type filesystems
-#APKCACHEOPTS="/media/LABEL=APKOVL/cache"
 APKCACHEOPTS=none
-
