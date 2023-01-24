@@ -19,7 +19,7 @@ jobs:
         with:
           name: Release Candidate
           generateReleaseNotes: true
-          artifacts: "boot.pxe,apkovl.tar.gz"
+          artifacts: "*.pxe,apkovl.tar.gz"
           artifactErrorsFailBuild: true
 
           tag: pre-release
