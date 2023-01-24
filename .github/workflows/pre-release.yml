@@ -10,9 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Create overlay files
+      - name: Create release assets
         run: |
-          chmod 755 apkovl/pxe/etc/local.d/*
           mkdir dist
           for i in boot/*.pxe; do cp $i dist/$(basename $i .pxe)-boot.pxe; done
           tar czf dist/sys.apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .
