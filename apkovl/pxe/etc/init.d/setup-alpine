@@ -1,0 +1,10 @@
+#!/sbin/openrc-run
+
+depend() {
+	need net
+	after firewall
+}
+
+start() {
+	setup-alpine -q -f /root/setup-alpine.answers
+}
