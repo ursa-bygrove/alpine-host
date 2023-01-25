@@ -6,6 +6,6 @@ depend() {
 
 start() {
 	ebegin "Running setup-alpine $ALPINEOPTS"
-	/sbin/setup-alpine "$ALPINEOPTS"
+	/sbin/setup-alpine $ALPINEOPTS
 	eend $?
 }
