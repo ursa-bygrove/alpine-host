@@ -1,2 +1,4 @@
 #!/bin/sh
-echo "Hello world!"
+echo "Hello normal world!"
+echo "Hello console world!" > /dev/console
+echo "Hello stdout world!" > /dev/stdout
