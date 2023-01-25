@@ -1,10 +1,11 @@
 #!/sbin/openrc-run
 
 depend() {
-	need net
-	after firewall
+	keyword -stop -timeout
 }
 
 start() {
-	setup-alpine -q -f /root/setup-alpine.answers
+	ebegin "Running setup-alpine $ALPINEOPTS"
+	/sbin/setup-alpine "$ALPINEOPTS"
+	eend $?
 }
