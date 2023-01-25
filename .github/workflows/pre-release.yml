@@ -12,7 +12,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create release assets
         run: |
-          chmod 0644 apkovl/pxe/etc/local.d/setup-alpine.start
           mkdir dist
           for i in boot/*.pxe; do cp $i dist/$(basename $i .pxe)-boot.pxe; done
           tar czf dist/sys.apkovl.tar.gz --owner=0 --group=0 -C apkovl/sys .

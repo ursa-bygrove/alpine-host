@@ -2,10 +2,10 @@
 KEYMAPOPTS="us us-mac"
 
 # Set hostname
-HOSTNAMEOPTS=alpine-latest-stable
+HOSTNAMEOPTS=alpine
 
 # Set device manager to mdev
-DEVDOPTS=mdevd
+DEVDOPTS=mdev
 
 # Contents of /etc/network/interfaces
 INTERFACESOPTS="auto lo
@@ -13,7 +13,7 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-    hostname alpine-latest-stable
+    hostname alpine
 "
 
 # Search domain of example.com, Google public nameserver
@@ -26,7 +26,7 @@ TIMEZONEOPTS="UTC"
 PROXYOPTS=none
 
 # Configure apk repositories
-APKREPOSOPTS="-c -1"
+APKREPOSOPTS="https://dl-cdn.alpinelinux.org/alpine/latest-stable/main https://dl-cdn.alpinelinux.org/alpine/latest-stable/community"
 
 # Create admin user
 USEROPTS="-u -k none development"
