@@ -1,0 +1,9 @@
+#!/bin/sh
+
+exec > /dev/console
+exec 2>&1
+
+ALPINEOPTS="-q -f /root/setup-alpine.answers"
+
+echo "Running setup-alpine $ALPINEOPTS"
+/sbin/setup-alpine $ALPINEOPTS
