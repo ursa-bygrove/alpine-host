@@ -1,0 +1,7 @@
+#!/bin/sh
+
+exec > /dev/console
+exec 2>&1
+
+echo "Add docker to base system"
+echo "docker" >> /etc/apk/world

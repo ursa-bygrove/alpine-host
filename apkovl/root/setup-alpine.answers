@@ -1,3 +1,5 @@
+# This file is sourced by `setup-alpine` script
+
 # Configure your keyboard
 KEYMAPOPTS="us us-mac"
 
@@ -26,10 +28,10 @@ TIMEZONEOPTS="UTC"
 PROXYOPTS=none
 
 # Configure apk repositories
-APKREPOSOPTS="https://dl-cdn.alpinelinux.org/alpine/latest-stable/main https://dl-cdn.alpinelinux.org/alpine/latest-stable/community"
+APKREPOSOPTS="$(echo $(head -2 /etc/apk/repositories))"
 
 # Create admin user
-USEROPTS="-u -k none development"
+USEROPTS="-a -u -f Development -k none development"
 
 # Install Openssh
 SSHDOPTS="-k none openssh"
@@ -38,7 +40,8 @@ SSHDOPTS="-k none openssh"
 NTPOPTS="openntpd"
 
 # Prepare and install filesystem on disk
-DISKOPTS="-m sys -o https://github.com/ursa-bygrove/alpine-latest-stable/releases/download/pre-release/pxe.apkovl.tar.gz /dev/vda"
+ERASE_DISKS=/dev/vda
+DISKOPTS="-v -m sys -o /root/apkovl.tar.gz /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
 LBUOPTS=none
