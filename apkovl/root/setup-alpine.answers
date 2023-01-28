@@ -28,7 +28,7 @@ TIMEZONEOPTS="UTC"
 PROXYOPTS=none
 
 # Configure apk repositories
-APKREPOSOPTS="$(echo $(head -2 /etc/apk/repositories))"
+APKREPOSOPTS="$(echo $(grep -v '#' /etc/apk/repositories))"
 
 # Create admin user
 USEROPTS="-a -u -f Development -k none development"
@@ -40,8 +40,8 @@ SSHDOPTS="-k none openssh"
 NTPOPTS="openntpd"
 
 # Prepare and install filesystem on disk
-ERASE_DISKS=/dev/vda
-DISKOPTS="-v -m sys -o /root/apkovl.tar.gz /dev/vda"
+export ERASE_DISKS=/dev/vda
+DISKOPTS="-v -e -m sys /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
 LBUOPTS=none
