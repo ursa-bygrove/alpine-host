@@ -3,5 +3,5 @@
 exec > /dev/console
 exec 2>&1
 
-echo "Add docker to base system"
+echo "Schedule docker for install ..."
 echo "docker" >> /etc/apk/world
