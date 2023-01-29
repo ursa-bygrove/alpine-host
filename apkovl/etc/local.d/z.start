@@ -1,5 +1,0 @@
-#!/bin/sh
-
-exec > /dev/console
-exec 2>&1
-

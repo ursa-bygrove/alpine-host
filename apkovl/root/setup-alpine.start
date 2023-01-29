@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Scheduling docker for install ..."
+echo "docker" >> /etc/apk/world
+
+echo "Installing cloud-init ..."
+apk add cloud-init
+setup-cloud-init
+
+echo "Running setup-alpine $ALPINEOPTS ..."
+/sbin/setup-alpine -f /root/setup-alpine.answers

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-exec > /dev/console
-exec 2>&1
-
-echo "Schedule docker for install ..."
-echo "docker" >> /etc/apk/world

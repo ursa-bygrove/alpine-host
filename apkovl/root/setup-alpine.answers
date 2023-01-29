@@ -28,7 +28,7 @@ TIMEZONEOPTS="UTC"
 PROXYOPTS=none
 
 # Configure apk repositories
-APKREPOSOPTS="$(echo $(grep -v '#' /etc/apk/repositories))"
+APKREPOSOPTS="-h > /dev/null"
 
 # Create admin user
 USEROPTS="-a -u -f Development -k none development"
@@ -41,7 +41,7 @@ NTPOPTS="openntpd"
 
 # Prepare and install filesystem on disk
 export ERASE_DISKS=/dev/vda
-DISKOPTS="-v -e -m sys /dev/vda"
+DISKOPTS="-v -m sys /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
 LBUOPTS=none
