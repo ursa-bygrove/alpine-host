@@ -2,13 +2,13 @@
 # when the later one is executed.
 
 # Vultr metadata endpoint  (https://www.vultr.com/metadata/)
-VULTR="http://169.254.169.254/v1"
+VULTRAPI="http://169.254.169.254/v1"
 
 # Configure your keyboard
 KEYMAPOPTS="us us-mac"
 
 # Set hostname
-HOSTNAMEOPTS="$(curl ${VULTR}/hostname)"
+HOSTNAMEOPTS="$(curl ${VULTRAPI}/hostname)"
 
 # Set device manager to mdev
 DEVDOPTS=mdevd
@@ -26,7 +26,7 @@ iface eth0 inet dhcp
 DNSOPTS="108.61.10.10 2001:19f0:300:1704::6"
 
 # Set timezone to UTC
-TIMEZONEOPTS="UTC"
+TIMEZONEOPTS="UTC" ########################################################
 
 # Set http/ftp proxy
 PROXYOPTS=none
@@ -36,8 +36,8 @@ PROXYOPTS=none
 APKREPOSOPTS="-h > /dev/null"
 
 # Create admin user
-USERSSHKEY="${VULTR}/public-keys"
-USEROPTS="-a -u -f Dmytro Konstantinov dk"
+USERSSHKEY="${VULTRAPI}/public-keys"
+USEROPTS="-a -u -f 'Dmytro Konstantinov' dk"
 
 # Install Openssh
 SSHDOPTS="-k none openssh"
