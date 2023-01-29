@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Installing curl ..."
+apk add curl
+
 echo "Scheduling docker for install ..."
 echo "docker" >> /etc/apk/world
 
