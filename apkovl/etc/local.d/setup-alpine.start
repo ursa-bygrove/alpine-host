@@ -3,5 +3,8 @@
 exec > /dev/console
 exec 2>&1
 
+# Executed only once!
 rm -f "${0}"
-/root/setup-alpine.start
+
+CMD="/root/$(basename ${0})"
+[ -x "${CMD}" ] && "${CMD}"

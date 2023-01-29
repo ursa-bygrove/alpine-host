@@ -1,22 +1,20 @@
-# This file is sourced by `setup-alpine` script
+# This is a standard shell script which is sourced by `setup-alpine`, 
+# when the later one is executed.
+
+# Vultr metadata endpoint  (https://www.vultr.com/metadata/)
+VULTR="http://169.254.169.254/v1"
 
 # Configure your keyboard
 KEYMAPOPTS="us us-mac"
 
 # Set hostname
-HOSTNAMEOPTS=alpine
+HOSTNAMEOPTS="$(curl ${VULTR}/hostname)"
 
 # Set device manager to mdev
 DEVDOPTS=mdevd
 
-# Contents of /etc/network/interfaces
-INTERFACESOPTS="auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet dhcp
-    hostname alpine
-"
+# Contents of /etc/network/interfaces (autoconfigured if blank)
+INTERFACESOPTS=""
 
 # Search domain of example.com, Google public nameserver
 DNSOPTS="108.61.10.10 2001:19f0:300:1704::6"
@@ -31,7 +29,8 @@ PROXYOPTS=none
 APKREPOSOPTS="-h > /dev/null"
 
 # Create admin user
-USEROPTS="-a -u -f Development -k none development"
+USERSSHKEY="${VULTR}/public-keys"
+USEROPTS="-a -u -f Dmytro Konstantinov dk"
 
 # Install Openssh
 SSHDOPTS="-k none openssh"
