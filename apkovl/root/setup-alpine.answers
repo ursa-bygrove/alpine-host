@@ -31,9 +31,8 @@ TIMEZONEOPTS="UTC" ########################################################
 # Set http/ftp proxy
 PROXYOPTS=none
 
-# Configure apk repositories
-# NOTE: Disabled, as apkovl includes a custom /etc/apk/repositories
-APKREPOSOPTS="-h > /dev/null"
+# Configure apk repositories (re-use apkovl settings)
+APKREPOSOPTS="$(cat /etc/apk/repositories)"
 
 # Create admin user
 USERSSHKEY="${VULTRAPI}/public-keys"
