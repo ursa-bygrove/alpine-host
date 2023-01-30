@@ -1,0 +1,13 @@
+--- setup-user
++++ setup-user
+@@ -128,10 +128,6 @@
+ 		*)
+ 			sshkeys="$keysopt";;
+ 	esac
+-	if [ -n "$sshkeys" ] && ! echo "$sshkeys" | grep -q ^ssh-; then
+-		echo "Could not find any keys in '$resp'" >&2
+-		exit 1
+-	fi
+ fi
+ 
+ if [ -n "$sshkeys" ] && [ "$sshkeys" != "none" ]; then

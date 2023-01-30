@@ -8,7 +8,7 @@ VULTRAPI="http://169.254.169.254/v1"
 KEYMAPOPTS="us us-mac"
 
 # Set hostname
-HOSTNAMEOPTS="$(curl ${VULTRAPI}/hostname)"
+HOSTNAMEOPTS="$(wget -q -O - ${VULTRAPI}/hostname)"
 
 # Set device manager to mdev
 DEVDOPTS=mdevd
@@ -35,8 +35,8 @@ PROXYOPTS=none
 APKREPOSOPTS="$(cat /etc/apk/repositories)"
 
 # Create admin user
-USERSSHKEY="${VULTRAPI}/public-keys"
 USEROPTS="-a -u -f 'Dmytro Konstantinov' dk"
+USERSSHKEY="$(wget -q -O - ${VULTRAPI}/public-keys)"
 
 # Install Openssh
 SSHDOPTS="-k none openssh"

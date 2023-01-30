@@ -1,10 +1,21 @@
 #!/bin/sh
 
-echo "Installing curl ..."
-apk add curl
+echo "Install patch command ..."
+apk add patch
 
-echo "Scheduling docker for install ..."
-echo "docker" >> /etc/apk/world
+echo "Scheduling packages for install ..."
+while read pkg; do
+  if ! grep -q "$pkg" /etc/apk/world; then
+    printf "%s " "$pkg"
+    echo "$pkg" >> /etc/apk/world
+  fi
+done < /root/apk-world.add
+printf "\n"
+
+echo "Patching setup-user to allow custom SSH Keys ..."
+patch -ubi /root/setup-user.patch /sbin/setup-user
+
+echo "Patching setup-disk to use keyfile instead of passphrase ..."
 
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-alpine.answers
