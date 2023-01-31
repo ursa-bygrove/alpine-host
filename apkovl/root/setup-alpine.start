@@ -16,4 +16,4 @@ echo "Patching setup-user to allow Blink SSH Keys ..."
 patch -ubi /root/setup-user.patch /sbin/setup-user
 
 echo "Running setup-alpine ..."
-/sbin/setup-alpine -f /root/setup-alpine.answers
+/sbin/setup-alpine -e -f /root/setup-alpine.answers
