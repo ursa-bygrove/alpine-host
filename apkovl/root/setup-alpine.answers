@@ -25,8 +25,8 @@ iface eth0 inet dhcp
 # Search domain of example.com, Google public nameserver
 DNSOPTS="108.61.10.10 2001:19f0:300:1704::6"
 
-# Set timezone to UTC
-TIMEZONEOPTS="UTC" ########################################################
+# Set timezone based on geo-location
+TIMEZONEOPTS="$(wget -q -O - https://ipapi.co/timezone)"
 
 # Set http/ftp proxy
 PROXYOPTS=none
