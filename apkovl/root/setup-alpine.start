@@ -3,7 +3,7 @@
 echo "Install patch command ..."
 apk add patch
 
-echo "Scheduling packages for install ..."
+echo "Adding packages to /etc/apk/world ..."
 while read pkg; do
   if ! grep -q "$pkg" /etc/apk/world; then
     printf "%s " "$pkg"
@@ -12,10 +12,8 @@ while read pkg; do
 done < /root/apk-world.add
 printf "\n"
 
-echo "Patching setup-user to allow custom SSH Keys ..."
+echo "Patching setup-user to allow Blink SSH Keys ..."
 patch -ubi /root/setup-user.patch /sbin/setup-user
 
-echo "Patching setup-disk to use keyfile instead of passphrase ..."
-
 echo "Running setup-alpine ..."
-/sbin/setup-alpine -e -f /root/setup-alpine.answers
+/sbin/setup-alpine -f /root/setup-alpine.answers
