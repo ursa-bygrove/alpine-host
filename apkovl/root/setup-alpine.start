@@ -1,19 +1,24 @@
 #!/bin/sh
 
-echo "Install patch command ..."
-apk add patch
+echo "Installing required packages ..."
+apk add \
+  docker \
+  docker-cli-compose \
+  ip6tables \
+  mosh \
+  patch \
+  ufw \
 
-echo "Adding packages to /etc/apk/world ..."
-while read pkg; do
-  if ! grep -q "$pkg" /etc/apk/world; then
-    printf "%s " "$pkg"
-    echo "$pkg" >> /etc/apk/world
-  fi
-done < /root/apk-world.add
-printf "\n"
+echo "Enabling uncomplicated firewall ..."
+/root/setup-ufw
+ufw enable
+rc-update add ufw
+
+echo "Enabling docker daemon ..."
+rc-update add docker boot
 
 echo "Patching setup-user to allow Blink SSH Keys ..."
 patch -ubi /root/setup-user.patch /sbin/setup-user
 
 echo "Running setup-alpine ..."
-/sbin/setup-alpine -e -f /root/setup-alpine.answers
+/sbin/setup-alpine -f /root/setup-alpine.answers

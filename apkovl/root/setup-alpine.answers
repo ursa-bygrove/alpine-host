@@ -35,7 +35,7 @@ PROXYOPTS=none
 APKREPOSOPTS="$(cat /etc/apk/repositories)"
 
 # Create admin user
-USEROPTS="-a -u -f 'Dmytro Konstantinov' dk"
+USEROPTS="-a -u -g docker -f 'Dmytro Konstantinov' dk"
 USERSSHKEY="$(wget -q -O - ${VULTRAPI}/public-keys)"
 
 # Install Openssh
@@ -46,7 +46,7 @@ NTPOPTS="openntpd"
 
 # Prepare and install filesystem on disk
 export ERASE_DISKS=/dev/vda
-DISKOPTS="-v -m sys /dev/vda"
+DISKOPTS="-v -e -m sys /dev/vda"
 
 # Setup storage, only used for "data" type filesystems
 LBUOPTS=none

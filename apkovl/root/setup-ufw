@@ -1,0 +1,11 @@
+ufw default deny incoming
+ufw default deny outgoing
+
+ufw allow out 67,68/udp   # allow DHCP client updates
+ufw allow out 123/udp     # allow outgoing NTP (Network Time Protocol)
+
+ufw allow out DNS         # allow outgoing DNS
+ufw allow out "WWW Full"  # allow outgoing HTTP/HTTPS
+
+ufw limit SSH             # open SSH port and enable brute-force protection
+ufw allow 60000:60010/udp # open MOSH ports (default 60000-61000)
