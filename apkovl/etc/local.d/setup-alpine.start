@@ -7,5 +7,5 @@ exec 2>&1
 
 rm -f "${0}"
 
-CMD="/root/$(basename ${0})"
+CMD="/root/$(basename ${0} .start)" 
 [ -x "${CMD}" ] && "${CMD}"
