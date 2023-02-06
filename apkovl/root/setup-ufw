@@ -1,11 +1,18 @@
+#!/bin/sh
+
+ufw reset
+
 ufw default deny incoming
 ufw default deny outgoing
 
-ufw allow out 67,68/udp   # allow DHCP client updates
-ufw allow out 123/udp     # allow outgoing NTP (Network Time Protocol)
+ufw allow out 67,68/udp       # DHCP client updates
+ufw allow out 123/udp         # Network Time Protocol
 
-ufw allow out DNS         # allow outgoing DNS
-ufw allow out "WWW Full"  # allow outgoing HTTP/HTTPS
+ufw allow out DNS             # DNS
+ufw allow out "WWW Full"      # HTTP/HTTPS
 
-ufw limit SSH             # open SSH port and enable brute-force protection
-ufw allow 60000:60010/udp # open MOSH ports (default 60000-61000)
+ufw limit in SSH              # SSH and enable brute-force protection
+ufw allow out SSH             # SSH (req. to clone Git repos)
+ufw allow in 60000:60010/udp  # MOSH (default 60000-61000)
+
+ufw enable
