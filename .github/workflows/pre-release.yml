@@ -10,13 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Create overlay file
+      - name: Create Alpine overlay file
         run: tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl .
+      - name: Create iSH overlay file
+        run: tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
       - uses: ncipollo/release-action@v1
         with:
           name: Release Candidate
           generateReleaseNotes: true
-          artifacts: "*.pxe,apkovl.tar.gz"
+          artifacts: "*.pxe,*.tar.gz"
           artifactErrorsFailBuild: true
 
           tag: pre-release
