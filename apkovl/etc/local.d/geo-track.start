@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Detect mobile devises 
+# Detect mobile devices 
 if [ -c /dev/location ]; then
 
   # Prevent iSH from sleeping in background
