@@ -1,16 +1,10 @@
-_shell="$(basename "$(echo "${0:-sh}" | tr -d '-')")"
-_confdir=${XDG_CONFIG_HOME:-$HOME/.config}/${_shell}
-_datadir=${XDG_DATA_HOME:-$HOME/.local/share}/${_shell}
+: "${XDG_CACHE_HOME:=$HOME/.cache}"
+: "${XDG_CONFIG_HOME:=$HOME/.config}"
+: "${XDG_DATA_HOME:=$HOME/.local/share}"
+: "${XDG_STATE_HOME:=$HOME/.local/state}"
 
-mkdir -p "${_datadir}"
-HISTFILE="${_datadir}/history"
-
-if [ -d "${_confdir}" ]; then
-    for rc in $(find "${_confdir}" -name *.sh); do
-        . ${rc}
-    done
-fi
-
-unset _datadir
-unset _confdir
-unset _shell
+export \
+  XDG_CACHE_HOME \
+  XDG_CONFIG_HOME \
+  XDG_DATA_HOME \
+  XDG_STATE_HOME

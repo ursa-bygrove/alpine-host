@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+sleep $(expr $RANDOM % 7200)
+exec apk -U upgrade

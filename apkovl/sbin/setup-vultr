@@ -1,0 +1,45 @@
+#!/bin/sh
+
+echo "Installing required packages ..."
+apk add \
+  curl \
+  doas-sudo-shim \
+  docker \
+  docker-cli-compose \
+  docs \
+  ip6tables \
+  mandoc \
+  patch \
+  ufw 
+
+if [ ! grep -q tmux /etc/shells ]; then
+  echo
+  echo "Configuring additional login shells..."
+  type -P tmux | tee -a /etc/shells
+fi
+
+services="crond local"
+for service in ${services}; do
+  if rc-service --exists $service; then  
+    rc-update add $service                
+  fi               
+done              
+unset service
+
+if type -P ufw >/dev/null; then
+  echo "Enabling uncomplicated firewall ..."
+  /root/setup-ufw
+  ufw enable
+  rc-update add ufw
+fi
+
+if type -P dockerd >/dev/null; then
+  echo "Enabling docker daemon ..."
+  rc-update add docker boot
+fi
+
+echo "Patching setup-user to allow Blink SSH Keys ..."
+patch -ubi /root/setup-user.patch /sbin/setup-user
+
+echo "Running setup-alpine ..."
+/sbin/setup-alpine -f "/root/$(basename ${0}).answers"

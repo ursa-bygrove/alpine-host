@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if ! type -P ufw >/dev/null; then
+  echo "Command not found -- ufw" >&2
+fi
+
 ufw reset
 
 ufw default deny incoming
@@ -13,6 +17,9 @@ ufw allow out "WWW Full"      # HTTP/HTTPS
 
 ufw limit in SSH              # SSH and enable brute-force protection
 ufw allow out SSH             # SSH (req. to clone Git repos)
-ufw allow in 60000:60010/udp  # MOSH (default 60000-61000)
+
+if [ type -P mosh >/dev/null ]; then
+  ufw allow 60000:60010/udp   # MOSH (default 60000-61000)
+fi
 
 ufw enable

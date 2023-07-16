@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Detect mobile devises 
+if [ -c /dev/location ]; then
+
+  # Prevent iSH from sleeping in background
+  cat /dev/location > /dev/null &
+
+fi

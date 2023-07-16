@@ -1,22 +1,45 @@
-# Setup a red prompt for root and a green one for users.
-# Symlink this file to color_prompt.sh to actually enable it.
-#                                                                                                                                                                                      
-# Colors:                                                                                                                                                                              
-#   \e[0m    - normal                                                                                                                                                                  
-#   \e[1;31m - red                                                                                                                                                                     
+# Color table: https://i.stack.imgur.com/utQ7mm.png
+#   \e[0m    - normal
+#   \e[1;31m - red
 #   \e[1;32m - green
+#   \e[1;33m - yellow
 
-_normal=$'\e[0m'
-if [ "$USER" = root ]; then
-	_color=$'\e[1;31m'
-	_symbol='#'
+_color_in() { printf '%s%s\e[0m' "${1}" "${2}"; }
+_color_red() { _color_in '\e[1;31m' "${1}"; }
+_color_green() { _color_in '\e[1;32m' "${1}"; }
+_color_yellow() { _color_in '\e[1;33m' "${1}"; }
+
+case "$(hostname -s)" in
+  DKs-*)
+    _host="$(_color_green '\h')"
+    ;;
+  *)
+    if [ -f /.dockerenv ]; then
+      _host="$(_color_yellow '\h')"
+    elif [ "${SSH_CLIENT}" ]; then
+      _host="$(_color_red '\h')"
+    fi
+esac
+
+if [ "${USER}" = "root" ]; then
+  _symbol='⌗'
 else
-	_color=$'\e[1;32m'
-	_symbol='❯'
+  _symbol='❭'
 fi
-if [ -n "$ZSH_VERSION" ]; then
-	PS1="%{$_color%}%m%{$_normal%}:%~%{$_color%}i $_symbol %{$_normal%}"
-else
-	PS1="\[$_color\]\h\[$_normal\]:\w\[$_color\] $_symbol \[$_normal\]"
-fi
-unset _normal _color _symbol
+
+case "${USER}" in
+  root|production)
+    _user="$(_color_red "${SSH_CLIENT:+\u}${_symbol}")"
+    ;;
+  dk|app)
+    _user="$(_color_green "${SSH_CLIENT:+\u}${_symbol}")"
+    ;;
+  *)
+    _user="$(_color_yellow "\u${_symbol}")"
+    ;;
+esac
+
+PS1="${_host}:\w ${_user} "
+
+unset -f _color_in _color_red _color_green _color_yellow
+unset _host _symbol _user
