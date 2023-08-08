@@ -12,6 +12,8 @@ apk add \
   patch \
   ufw 
 
+rm -f /etc/profile.d/*.disabled
+
 if [ ! grep -q tmux /etc/shells ]; then
   echo
   echo "Configuring additional login shells..."
