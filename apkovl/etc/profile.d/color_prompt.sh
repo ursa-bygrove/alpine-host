@@ -9,14 +9,15 @@ _color_red() { _color_in '\e[1;31m' "${1}"; }
 _color_green() { _color_in '\e[1;32m' "${1}"; }
 _color_yellow() { _color_in '\e[1;33m' "${1}"; }
 
-case "$(hostname -s)" in
-  DKs-*)
+case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
+  DKs-*|*.local)
     _host="$(_color_green '\h')"
     ;;
+  *.ursa.dk|*.ursa-bygrove.dk)
+    _host="$(_color_yellow '\h')"
+    ;;
   *)
-    if [ -f /.dockerenv ]; then
-      _host="$(_color_yellow '\h')"
-    elif [ "${SSH_CLIENT}" ]; then
+    if [ ! -f /.dockerenv ]; then
       _host="$(_color_red '\h')"
     fi
 esac
@@ -29,10 +30,10 @@ fi
 
 case "${USER}" in
   root|production)
-    _user="$(_color_red "${SSH_CLIENT:+\u}${_symbol}")"
+    _user="$(_color_red "\u${_symbol}")"
     ;;
-  dk|app)
-    _user="$(_color_green "${SSH_CLIENT:+\u}${_symbol}")"
+  dk)
+    _user="$(_color_green "\u${_symbol}")"
     ;;
   *)
     _user="$(_color_yellow "\u${_symbol}")"
