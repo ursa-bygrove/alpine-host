@@ -1,0 +1,28 @@
+#!/bin/sh
+
+echo "Auto-generating /etc/subuid ..."
+while IFS= read -r line; do
+  if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
+    user="${line%%:*}"
+    file="/etc/subuid"
+    start="$(( $(echo "$line" | cut -d: -f3) * 65536))"
+
+    if ! grep "^${user}" "${file}"; then
+      echo "${user}:${start}:65536" | tee -a "${file}"
+    fi
+  fi
+done < /etc/passwd
+
+echo
+echo "Auto-generating /etc/subgid ..."
+while IFS= read -r line; do
+  if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
+    user="${line%%:*}"
+    file="/etc/subgid"
+    start="$(( $(echo "$line" | cut -d: -f4) * 65536))"
+
+    if ! grep "^${user}" "${file}"; then
+      echo "${user}:${start}:65536" | tee -a "${file}"
+    fi
+  fi
+done < /etc/passwd
