@@ -1,7 +1,11 @@
-#!/bin/sh
+#!/bin/sh -e
 
-if ! type -P ufw >/dev/null; then
+if [ $(id -u) -ne 0 ]; then
+  echo "This script can only be run by root!" >&2
+  exit 1
+elif ! type -P ufw >/dev/null; then
   echo "Command not found -- ufw" >&2
+  exit 1
 fi
 
 ufw reset
@@ -9,17 +13,13 @@ ufw reset
 ufw default deny incoming
 ufw default deny outgoing
 
-ufw allow out 67,68/udp       # DHCP client updates
-ufw allow out 123/udp         # Network Time Protocol
-
+ufw allow out 67,68/udp       # DHCP
+ufw allow out 123/udp         # NTP
 ufw allow out DNS             # DNS
-ufw allow out "WWW Full"      # HTTP/HTTPS
 
-ufw limit in SSH              # SSH and enable brute-force protection
-ufw allow out SSH             # SSH (req. to clone Git repos)
+ufw limit in SSH              # SSH, enable brute-force protection
+ufw allow out SSH             # SSH (eg: requests to clone Git repos)
 
 if [ type -P mosh >/dev/null ]; then
   ufw allow 60000:60010/udp   # MOSH (default 60000-61000)
 fi
-
-ufw enable
