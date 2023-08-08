@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/sh -e
+
+SERVICES="crond local ufw"
+
+if [ $(id -u) -ne 0 ]; then
+  echo "This script can only be run by root!" >&2
+  exit 1
+fi
 
 echo "Installing required packages ..."
 apk add \
@@ -6,42 +13,45 @@ apk add \
   doas-sudo-shim \
   docker \
   docker-cli-compose \
+  docker-rootless-extras \
   docs \
   ip6tables \
+  keychain \
   mandoc \
   patch \
-  ufw 
+  ufw
 
 rm -f /etc/profile.d/*.disabled
 
-if [ ! grep -q tmux /etc/shells ]; then
+if type -P ufw > /dev/null; then
+  echo
+  echo "Configuring uncomplicated firewall ..."
+  /sbin/setup-ufw
+  ufw enable
+fi
+
+if type -P dockerd-rootless > /dev/null; then
+  echo
+  echo "Enabling cgroups v2 required by docker-rootless ..."
+  sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
+  SERVICES+=' cgroups'
+  /sbin/setup-subids
+fi
+
+if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
   echo
   echo "Configuring additional login shells..."
   type -P tmux | tee -a /etc/shells
 fi
 
-services="crond local"
-for service in ${services}; do
-  if rc-service --exists $service; then  
-    rc-update add $service                
-  fi               
-done              
+echo
+for service in ${SERVICES}; do
+  if rc-service --exists $service; then
+    rc-update add $service default
+  fi
+done
 unset service
 
-if type -P ufw >/dev/null; then
-  echo "Enabling uncomplicated firewall ..."
-  /root/setup-ufw
-  ufw enable
-  rc-update add ufw
-fi
-
-if type -P dockerd >/dev/null; then
-  echo "Enabling docker daemon ..."
-  rc-update add docker boot
-fi
-
-echo "Patching setup-user to allow Blink SSH Keys ..."
-patch -ubi /root/setup-user.patch /sbin/setup-user
-
+echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -f "/root/$(basename ${0}).answers"
