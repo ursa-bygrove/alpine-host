@@ -1,6 +1,4 @@
-#!/bin/sh
-
-set -eu
+#!/bin/sh -e
 
 _uptime() {
   local days="$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 / 86400)"
@@ -16,19 +14,24 @@ _ip() {
   printf "%s" "${ip}"
 }
 
-row='%-15s %8s %10s %10s %12s\n'
+resources='  %-18s %11s %11s %11s      %s\n'
+connections='  %-6s %23s %23s      %s\n'
 
 cat << EOF
 $(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))
 Time:  $(date)
   Up:  $(_uptime)
 
-$(printf "${row}" '' 'Total' 'Used' 'Free')
-$(free -h | awk -v row="${row}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')
-$(df -ht ext4 | awk -v row="${row}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
-$(df -ht tmpfs | awk -v row="${row}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
+$(printf "%-20s${resources#*s}" 'Resources:' 'Total' 'Used' 'Free')
+$(free -h | awk -v row="${resources}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')
+$(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
+$(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
 
-Active users:
+$(printf "%12s %19${connections#*3}" 'Connections:' 'Local' 'Remote')
+$(ss -Htunl | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
+$(ss -Htun | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
+
+Past users:
 $(last | awk -F "   +" 'FNR>=2 { if (!($1 in row)) { row[$1]=$NF } } END { for (u in row) { print "  " row[u] " - " u } }')
 
 Load average:
