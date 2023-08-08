@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -eu
+
+_uptime() {
+  local days="$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 / 86400)"
+  local hours="$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 % 86400 / 3600)"
+  local minutes="$(expr `cat /proc/uptime | cut -d '.' -f1` % 31556926 % 86400 % 3600 / 60)"
+  printf "%i days  %i hours  %i minutes" "${days}" "${hours}" "${minutes}"
+}
+
+_ip() {
+  : ${1:?Missing argument -- network device}
+  : ${1:?Missing argument -- ip version number}
+  local ip="$(ip -${2} -o address show dev "${1}" | awk -F '[[:space:]/]*' '{ print $4 }')"
+  printf "%s" "${ip}"
+}
+
+row='%-15s %8s %10s %10s %12s\n'
+
+cat << EOF
+$(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))
+Time:  $(date)
+  Up:  $(_uptime)
+
+$(printf "${row}" '' 'Total' 'Used' 'Free')
+$(free -h | awk -v row="${row}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')
+$(df -ht ext4 | awk -v row="${row}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
+$(df -ht tmpfs | awk -v row="${row}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
+
+Active users:
+$(last | awk -F "   +" 'FNR>=2 { if (!($1 in row)) { row[$1]=$NF } } END { for (u in row) { print "  " row[u] " - " u } }')
+
+Load average:
+  $(cat /proc/loadavg | awk '{ print "1 min - " $1 "%  5 min - " $2 "%  15 min - " $3 "%" }')
+
+EOF
