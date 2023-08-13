@@ -27,7 +27,7 @@ $(free -h | awk -v row="${resources}" 'FNR>=2 { printf row, substr($1, 1, length
 $(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
 $(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
 
-$(printf "%12s %19${connections#*3}" 'Connections:' 'Local' 'Remote')
+$(printf "%-12s %19s${connections#*%*%*s}" 'Connections:' 'Local' 'Remote')
 $(ss -Htunl | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
 $(ss -Htun | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
 
