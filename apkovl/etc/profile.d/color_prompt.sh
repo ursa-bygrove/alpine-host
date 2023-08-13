@@ -10,29 +10,27 @@ _color_green() { _color_in '\e[1;32m' "${1}"; }
 _color_yellow() { _color_in '\e[1;33m' "${1}"; }
 
 case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
-  DKs-*|*.local)
+  ${PS1_RED_HOSTS})
+    _host="$(_color_red '\h')"
+    ;;
+  ${PS1_GREEN_HOSTS:=localhost|*.local})
     _host="$(_color_green '\h')"
     ;;
-  *.ursa.dk|*.ursa-bygrove.dk)
-    _host="$(_color_yellow '\h')"
-    ;;
   *)
-    if [ ! -f /.dockerenv ]; then
-      _host="$(_color_red '\h')"
-    fi
+    _host="$(_color_yellow '\h')"
 esac
 
 if [ "${USER}" = "root" ]; then
-  _symbol='⌗'
+  _symbol='#'
 else
-  _symbol='❭'
+  _symbol="${PS1_USER_SYMBOL:=❭}"
 fi
 
 case "${USER}" in
-  root|production)
+  ${PS1_RED_USERS:=root})
     _user="$(_color_red "\u${_symbol}")"
     ;;
-  dk)
+  ${PS1_GREEN_USERS})
     _user="$(_color_green "\u${_symbol}")"
     ;;
   *)
