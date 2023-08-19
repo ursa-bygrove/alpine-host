@@ -11,9 +11,8 @@ echo "Installing required packages ..."
 apk add \
   curl \
   doas-sudo-shim \
-  docker \
-  docker-cli-compose \
-  docker-rootless-extras \
+  docker-cli-compose@edge \
+  docker-rootless-extras@edge \
   docs \
   ip6tables \
   keychain \
