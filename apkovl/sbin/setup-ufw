@@ -3,7 +3,7 @@
 if [ $(id -u) -ne 0 ]; then
   echo "This script can only be run by root!" >&2
   exit 1
-elif ! type -q ufw > /dev/null; then
+elif ! type -t ufw > /dev/null; then
   echo "Command not found -- ufw" >&2
   exit 1
 fi
@@ -20,6 +20,6 @@ ufw allow out DNS             # DNS
 ufw limit in SSH              # SSH, enable brute-force protection
 ufw allow out SSH             # SSH (eg: requests to clone Git repos)
 
-if type -q mosh > /dev/null; then
+if type -t mosh > /dev/null; then
   ufw allow 60000:60010/udp   # MOSH (default 60000-61000)
 fi
