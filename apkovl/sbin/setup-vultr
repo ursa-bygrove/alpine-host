@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-SERVICES="crond local ufw"
+SERVICES="crond ip6tables iptables local"
 
 if [ $(id -u) -ne 0 ]; then
   echo "This script can only be run by root!" >&2
@@ -14,19 +14,21 @@ apk add \
   docker-cli-compose@edge \
   docker-rootless-extras@edge \
   docs \
+  drill \
   ip6tables \
+  iptables \
+  iproute2 \
   keychain \
   mandoc \
   patch \
-  ufw
+  tmux
 
 rm -f /etc/profile.d/*.disabled
 
-if type -P ufw > /dev/null; then
+if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
   echo
-  echo "Configuring uncomplicated firewall ..."
-  /sbin/setup-ufw
-  ufw enable
+  echo "Configuring additional login shells..."
+  type -P tmux | tee -a /etc/shells
 fi
 
 if type -P dockerd-rootless > /dev/null; then
@@ -35,12 +37,6 @@ if type -P dockerd-rootless > /dev/null; then
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
   SERVICES="${SERVICES} cgroups"
   /sbin/setup-subids
-fi
-
-if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
-  echo
-  echo "Configuring additional login shells..."
-  type -P tmux | tee -a /etc/shells
 fi
 
 echo
