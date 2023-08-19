@@ -1,44 +1,58 @@
-# Color table: https://i.stack.imgur.com/utQ7mm.png
-#   \e[0m    - normal
-#   \e[1;31m - red
-#   \e[1;32m - green
-#   \e[1;33m - yellow
+printc() {
+  : "${1:?Missing argument -- color name}"
+  : "${2:?Missing argument -- string to print}"
 
-_color_in() { printf '%s%s\e[0m' "${1}" "${2}"; }
-_color_red() { _color_in '\e[1;31m' "${1}"; }
-_color_green() { _color_in '\e[1;32m' "${1}"; }
-_color_yellow() { _color_in '\e[1;33m' "${1}"; }
+  # https://i.stack.imgur.com/utQ7mm.png
+  local -A colors=(
+    [black]='\e[1;30m'
+    [red]='\e[1;31m'
+    [green]='\e[1;32m'
+    [yellow]='\e[1;33m'
+    [blue]='\e[1;34m'
+    [magenta]='\e[1;35m'
+    [cyan]='\e[1;36m'
+    [lightgrey]='\e[1;37m'
+    [darkgrey]='\e[1;90m'
+    [lightred]='\e[1;91m'
+    [lightgreen]='\e[1;92m'
+    [lightyellow]='\e[1;93m'
+    [lightblue]='\e[1;94m'
+    [lightmagenta]='\e[1;95m'
+    [lightcyan]='\e[1;96m'
+    [white]='\e[1;97m'
+  )
 
-case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
-  ${PS1_RED_HOSTS})
-    _host="$(_color_red '\h')"
-    ;;
-  ${PS1_GREEN_HOSTS:=localhost|*.local})
-    _host="$(_color_green '\h')"
-    ;;
-  *)
-    _host="$(_color_yellow '\h')"
-esac
+  local c="$(echo "${1}" | tr -d '[[:space:]]_-' | tr '[[:upper:]]' '[[:lower:]]')"
+  printf '%s%s\e[0m' "${colors[$c]}" "${2}";
+}
 
-if [ "${USER}" = "root" ]; then
-  _symbol='#'
-else
-  _symbol="${PS1_USER_SYMBOL:=❭}"
-fi
+color_prompt() {
+  local host=''
+  case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
+    ${PS1_RED_HOSTS:=localhost})
+      host="$(printc red '\h')"
+      ;;
+    ${PS1_GREEN_HOSTS:=*.local})
+      host="$(printc green '\h')"
+      ;;
+    *)
+      host="$(printc yellow '\h')"
+  esac
 
-case "${USER}" in
-  ${PS1_RED_USERS:=root})
-    _user="$(_color_red "\u${_symbol}")"
-    ;;
-  ${PS1_GREEN_USERS})
-    _user="$(_color_green "\u${_symbol}")"
-    ;;
-  *)
-    _user="$(_color_yellow "\u${_symbol}")"
-    ;;
-esac
+  local user=''
+  case "${USER}" in
+    ${PS1_RED_USERS:=root})
+      user="$(printc red "\u")"
+      ;;
+    ${PS1_GREEN_USERS})
+      user="$(printc green "\u")"
+      ;;
+    *)
+      user="$(printc yellow "\u")"
+      ;;
+  esac
 
-PS1="${_host}:\w ${_user} "
+  PS1="${user}@${host}:\w \$ "
+}
 
-unset -f _color_in _color_red _color_green _color_yellow
-unset _host _symbol _user
+color_prompt
