@@ -8,7 +8,7 @@ elif ! type -q ufw > /dev/null; then
   exit 1
 fi
 
-ufw reset
+ufw reset --force
 
 ufw default deny incoming
 ufw default deny outgoing
