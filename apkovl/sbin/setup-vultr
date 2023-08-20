@@ -48,6 +48,12 @@ for service in ${SERVICES}; do
 done
 unset service
 
+# diff -dw /path/to/file.orig /path/to/file
+echo
+for patch in /root/*.patch; do
+  ( cd / && patch -ub -p0 -i "${patch}" )
+done
+
 echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -f "/root/$(${0##*/}).answers"
