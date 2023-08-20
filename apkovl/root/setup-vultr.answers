@@ -22,7 +22,7 @@ iface eth0 inet dhcp
     hostname ${HOSTNAMEOPTS}
 "
 
-# Search domain of example.com, Google public nameserver
+# Use Vultr's in-house DNS server
 DNSOPTS="108.61.10.10 2001:19f0:300:1704::6"
 
 # Set timezone based on geo-location
