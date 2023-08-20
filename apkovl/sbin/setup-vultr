@@ -48,10 +48,11 @@ for service in ${SERVICES}; do
 done
 unset service
 
-# diff -dw /path/to/file.orig /path/to/file
+# Create patches with:
+#   diff -dw /path/to/file.orig /path/to/file
 echo
 for patch in /root/*.patch; do
-  ( cd / && patch -ub -p0 -i "${patch}" )
+  ( cd / && patch -ubf -p0 -i "${patch}" || true )
 done
 
 echo
