@@ -37,7 +37,7 @@ if type -P dockerd-rootless > /dev/null; then
   echo "Enabling cgroups v2 required by docker-rootless ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
   SERVICES="${SERVICES} cgroups"
-  /sbin/setup-subids
+  /usr/local/sbin/setup-subids
 fi
 
 echo
