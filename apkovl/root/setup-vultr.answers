@@ -31,8 +31,8 @@ TIMEZONEOPTS="$(wget -q -O - https://ipapi.co/timezone)"
 # Set http/ftp proxy
 PROXYOPTS=none
 
-# Configure apk repositories (disable by forcing an error)
-APKREPOSOPTS="--- 2>/dev/null || true"
+# Configure apk repositories (see patch)
+APKREPOSOPTS="USE_SUPPLIED"
 
 # Create admin user
 USEROPTS="-a -u -g docker dk"

@@ -1,0 +1,13 @@
+--- /sbin/setup-alpine.orig
++++ /sbin/setup-alpine
+@@ -229,7 +229,10 @@
+ 	setup-ntp ${NTPOPTS}
+ fi
+ 
++# Allow skipping apkrepos setup (eg: when using answers file)
++if [ "${APKREPOSOPTS}" != "USE_SUPPLIED" ]; then
+ setup-apkrepos ${APKREPOSOPTS}
++fi
+ 
+ # Now that network and apk are operational we can install another device manager
+ if [ "$rc_sys" != LXC ] && [ -n "$DEVDOPTS" -a "$DEVDOPTS" != mdev ]; then
