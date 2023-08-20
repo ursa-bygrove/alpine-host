@@ -50,4 +50,4 @@ unset service
 
 echo
 echo "Running setup-alpine ..."
-/sbin/setup-alpine -f "/root/$(basename ${0}).answers"
+/sbin/setup-alpine -f "/root/$(${0##*/}).answers"
