@@ -1,0 +1,57 @@
+#!/bin/sh -e
+
+if [ $(id -u) -ne 0 ]; then
+  echo "ERROR: This script can only be run by root!" >&2
+  exit 1
+fi
+
+echo "Installing required packages ..."
+apk update
+apk add \
+  curl \
+  doas-sudo-shim \
+  docker-cli-compose@edge \
+  docker-rootless-extras@edge \
+  docs \
+  drill \
+  ip6tables \
+  iptables \
+  iproute2 \
+  keychain \
+  mandoc \
+  patch \
+  tmux
+
+SERVICES="crond ip6tables iptables local"
+rm -f /etc/profile.d/*.disabled
+
+# Disable root login
+# Initial login, after PXE boot, is controlled by /etc/securetty in apkovl file
+:> /etc/securetty
+sed -i -E 's/^root::/root:!:/' /etc/shadow
+
+# Make tmux available as a login shell
+if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
+  echo
+  echo "Configuring additional login shells..."
+  type -P tmux | tee -a /etc/shells
+fi
+
+# Setup containerization services
+if type -P dockerd-rootless > /dev/null; then
+  echo
+  echo "Enabling cgroups v2 required by docker-rootless ..."
+  sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
+  SERVICES="${SERVICES} cgroups"
+  /usr/local/sbin/setup-subids
+fi
+
+# Initialise local services
+echo
+echo "Starting local services ..."
+for service in ${SERVICES}; do
+  if rc-service --exists $service; then
+    rc-update add $service default
+  fi
+done
+unset service
