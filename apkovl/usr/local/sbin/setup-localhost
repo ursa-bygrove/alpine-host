@@ -28,7 +28,7 @@ rm -f /etc/profile.d/*.disabled
 # Disable root login
 # Initial login, after PXE boot, is controlled by /etc/securetty in apkovl file
 :> /etc/securetty
-sed -i -E 's/^root::/root:!:/' /etc/shadow
+passwd -l root
 
 # Make tmux available as a login shell
 if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
