@@ -57,4 +57,4 @@ color_prompt() {
   PS1="${user}@${host}:\w \$ "
 }
 
-# color_prompt
+color_prompt
