@@ -37,6 +37,7 @@ APKREPOSOPTS=""
 
 # Create admin user
 USEROPTS="-a -g audio,video,netdev,docker dk"
+ADDUSEROPTS="-D -s /usr/bin/tmux"
 USERSSHKEY="${VULTRAPI}/public-keys"
 
 # Install Openssh
