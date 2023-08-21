@@ -10,8 +10,8 @@ KEYMAPOPTS="us us-mac"
 # Set hostname
 HOSTNAMEOPTS="$(wget -q -O - ${VULTRAPI}/hostname)"
 
-# Set device manager to mdev
-DEVDOPTS=mdevd
+# Set device manager
+DEVDOPTS="mdevd"
 
 # Contents of /etc/network/interfaces (autoconfigured if blank)
 INTERFACESOPTS="auto lo
@@ -42,8 +42,8 @@ USERSSHKEY="$(wget -q -O - ${VULTRAPI}/public-keys)"
 # Install Openssh
 SSHDOPTS="-k none openssh"
 
-# Use openntpd
-NTPOPTS="openntpd"
+# Set NTP daemon
+NTPOPTS="busybox"
 
 # Prepare and install filesystem on disk
 export ERASE_DISKS=/dev/vda
