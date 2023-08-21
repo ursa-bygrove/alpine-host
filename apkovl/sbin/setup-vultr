@@ -24,4 +24,4 @@ done
 
 echo
 echo "Running setup-alpine ..."
-/sbin/setup-alpine -f "/root/${0##*/}.answers"
+/sbin/setup-alpine -e -f "/root/${0##*/}.answers"
