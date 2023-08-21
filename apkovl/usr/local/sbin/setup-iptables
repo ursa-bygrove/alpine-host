@@ -1,21 +1,22 @@
 #!/bin/sh -e
 
 if [ $(id -u) -ne 0 ]; then
-  echo "This script can only be run by root!" >&2
+  echo "ERROR: This script can only be run by root!" >&2
   exit 1
 fi
 
+# Change between iptable and ip6tables, depending on the name of this script
 IPT="$(type -P "${0##*/setup-}")"
 
 if [ -z "${IPT}" ]; then
-  echo "Couldn't find '${0##*/setup-}' in PATH" >&2
+  echo "ERROR: Couldn't find '${0##*/setup-}' in PATH" >&2
   exit 1
 fi
 
-# Sources
+# Defaults and base rules
+# -----------------------
 # - http://www.mista.nu/iptables
 # - https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands#generally-useful-rules
-# - https://jrs-s.net/2014/08/22/allowing-traceroutes-to-succeed-with-iptables/
 
 # Flush old rules, old custom tables
 ${IPT} --flush
@@ -43,40 +44,31 @@ ${IPT} -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # Drop invalid packets
 ${IPT} -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-# Allow incoming Ping and Traceroute connections
-${IPT} -A INPUT -p icmp --icmp-type 8 -j ACCEPT
-${IPT} -A INPUT -p udp --dport 33434:33523 -j REJECT
-
-# Allow outgoing WHOIS connections
-# ${IPT} -A OUTPUT -p udp --dport 43 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p udp --sport 43 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-
-# Allow outgoing NTP connections
-# ${IPT} -A OUTPUT -p udp --dport 123 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p udp --sport 123 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+# Application-specific rules
+# --------------------------
+# - https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands#generally-useful-rules
 
 # Allow outgoing DNS connections over TCP and UDP
-# ${IPT} -A OUTPUT -p udp --dport 53 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A OUTPUT -p tcp --dport 53 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p udp --sport 53 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p tcp --sport 53 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+${IPT} -A OUTPUT -p udp --dport 53 -m conntrack --ctstate NEW -j ACCEPT
+${IPT} -A OUTPUT -p tcp --dport 53 -m conntrack --ctstate NEW -j ACCEPT
+
+# Allow incoming Ping and Traceroute connections
+# https://jrs-s.net/2014/08/22/allowing-traceroutes-to-succeed-with-iptables/
+[ "${IPT##*/}" = "iptables" ] \
+  && ${IPT} -A INPUT -p icmp --icmp-type 8 -j ACCEPT \
+  || ${IPT} -A INPUT -p icmpv6 --icmpv6-type 8 -j ACCEPT
+${IPT} -A INPUT -p udp --dport 33434:33523 -j REJECT
+
+# Allow outgoing NTP connections
+${IPT} -A OUTPUT -p udp --dport 123 -m conntrack --ctstate NEW -j ACCEPT
 
 # Allow outgoing DHCP connections
-# ${IPT} -A OUTPUT -p udp -m multiport --dports 67,68 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p udp --m multiport -sports 67,68 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+${IPT} -A OUTPUT -p udp -m multiport --dports 67,68 -m conntrack --ctstate NEW -j ACCEPT
 
-# Allow incoming SSH connections
-${IPT} -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-${IPT} -A OUTPUT -p tcp --sport 22 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+# Allow incoming and outgoing SSH connections
+${IPT} -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
+${IPT} -A OUTPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
 
-# Allow outgoing SSH connections
-# ${IPT} -A OUTPUT -p tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p tcp --sport 22 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-
-# Allow incoming HTTP and HTTPS connections
-# ${IPT} -A INPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A OUTPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-
-# Allow outgoing HTTP and HTTPS connections
-# ${IPT} -A OUTPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-# ${IPT} -A INPUT -p tcp -m multiport --sports 80,443 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+# Allow incoming and outgoing HTTP/HTTPS connections
+${IPT} -A INPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW -j ACCEPT
+${IPT} -A OUTPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW -j ACCEPT
