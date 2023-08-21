@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Auto-generating /etc/subuid ..."
+echo "Generating /etc/subuid for all users ..."
 while IFS= read -r line; do
   if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
     user="${line%%:*}"
@@ -14,7 +14,7 @@ while IFS= read -r line; do
 done < /etc/passwd
 
 echo
-echo "Auto-generating /etc/subgid ..."
+echo "Generating /etc/subgid for all users ..."
 while IFS= read -r line; do
   if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
     user="${line%%:*}"
