@@ -1,0 +1,27 @@
+#!/bin/sh -e
+
+if [ $(id -u) -ne 0 ]; then
+  echo "ERROR: This script can only be run by root!" >&2
+  exit 1
+fi
+
+setup-localhost
+
+# Create patches with:
+#   diff -dw /path/to/file.orig /path/to/file
+echo
+echo "Customising setup scripts ..."
+for patch in /root/*.patch; do
+  ( cd / && patch -ubf -p0 -i "${patch}" || true )
+done
+
+echo
+echo "Updating lbu paths ..."
+lbu add /root/.exrc /usr/local
+for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
+  lbu add "${file}" "${file}."*
+done
+
+echo
+echo "Running setup-alpine ..."
+/sbin/setup-alpine -f "/root/${0##*/}.answers"
