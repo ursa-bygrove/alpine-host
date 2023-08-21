@@ -54,7 +54,7 @@ color_prompt() {
       ;;
   esac
 
-  PS1="${user}@${host}:\w \$ "
+  PS1="${user}@${host}:\w \\$ "
 }
 
 color_prompt
