@@ -1,11 +1,41 @@
 --- /sbin/setup-user.orig
 +++ /sbin/setup-user
-@@ -128,7 +128,8 @@
+@@ -46,7 +46,7 @@
+ 	usage "1" >&2
+ elif [ $# -eq 1 ]; then
+ 	username="$1"
+-	nopassword="-D"
++	nopassword="${ADDUSEROPTS:--D}"
+ else
+ 	interactive=1
+ fi
+@@ -109,12 +109,12 @@
+ 				break
+ 				;;
+ 			https://*|http://*)
+-				sshkeys=$(wget -q -O- $resp | grep ^ssh-)
++				sshkeys=$(wget -q -O- $resp | grep -E "^(ssh|ecdsa|sk-ecdsa)-")
+ 				;;
+ 			*)	sshkeys="$resp"
+ 				;;
+ 		esac
+-		if echo "$sshkeys" | grep -q ^ssh-; then
++		if echo "$sshkeys" | grep -q -E "^(ssh|ecdsa|sk-ecdsa)-"; then
+ 			break
+ 		fi
+ 		echo "Did not find any key in '$resp'"
+@@ -122,13 +122,13 @@
+ else
+ 	case "$keysopt" in
+ 		https://*|http://*)
+-			sshkeys=$(wget -q -O- "$keysopt" | grep ^ssh-);;
++			sshkeys=$(wget -q -O- "$keysopt" | grep -E "^(ssh|ecdsa|sk-ecdsa)-");;
+ 		none)
+ 			sshkeys="" ;;
  		*)
  			sshkeys="$keysopt";;
  	esac
 -	if [ -n "$sshkeys" ] && ! echo "$sshkeys" | grep -q ^ssh-; then
-+	# Enable support for Apple Secure Enclave & Passkey Keys
 +	if [ -n "$sshkeys" ] && ! echo "$sshkeys" | grep -q -E "^(ssh|ecdsa|sk-ecdsa)-"; then
  		echo "Could not find any keys in '$resp'" >&2
  		exit 1

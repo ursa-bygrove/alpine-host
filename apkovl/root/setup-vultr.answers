@@ -36,8 +36,8 @@ export SETUP_APKREPOS=false
 APKREPOSOPTS=""
 
 # Create admin user
-USEROPTS="-a -u -g docker dk"
-USERSSHKEY="$(wget -q -O - ${VULTRAPI}/public-keys)"
+USEROPTS="-a -g audio,video,netdev,docker dk"
+USERSSHKEY="${VULTRAPI}/public-keys"
 
 # Install Openssh
 SSHDOPTS="-k none openssh"
