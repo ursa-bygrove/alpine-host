@@ -32,7 +32,8 @@ TIMEZONEOPTS="$(wget -q -O - https://ipapi.co/timezone)"
 PROXYOPTS=none
 
 # Configure apk repositories (see patch)
-APKREPOSOPTS="USE_SUPPLIED"
+export SETUP_APKREPOS=false
+APKREPOSOPTS=""
 
 # Create admin user
 USEROPTS="-a -u -g docker dk"
