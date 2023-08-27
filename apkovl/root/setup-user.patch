@@ -8,7 +8,15 @@
  		 -u  Unlock the user automatically (eg. creating the user non-interactively
  		     with an ssh key for login)
  
-@@ -32,13 +33,14 @@
+@@ -25,20 +26,21 @@
+ 	exit $1
+ }
+ 
+-while getopts "af:g:hk:u" opt; do
++while getopts "af:g:hk:s:u" opt; do
+ 	case $opt in
+ 		a) admin=1;;
+ 		h) usage 0;;
  		f) fullnameopt="$OPTARG";;
  		g) groups="$OPTARG";;
  		k) keysopt="$OPTARG";;
