@@ -40,3 +40,12 @@
  		echo "Could not find any keys in '$resp'" >&2
  		exit 1
  	fi
+@@ -153,7 +153,7 @@
+ if [ -n "$admin" ]; then
+ 	apk add doas
+ 	mkdir -p "$ROOT"/etc/doas.d
+-	echo "permit persist :wheel" >> "$ROOT"/etc/doas.d/doas.conf
++	echo "permit nopass :wheel" >> "$ROOT"/etc/doas.d/wheel.conf
+ 	$MOCK addgroup "$username" "wheel" || exit
+ fi
+ 
