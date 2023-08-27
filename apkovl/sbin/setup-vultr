@@ -28,6 +28,5 @@ echo "Running setup-alpine ..."
 
 if type -P dockerd-rootless > /dev/null; then
   echo
-  echo "Updating subuid and subgid for new users ..."
   /usr/local/sbin/setup-subids
 fi
