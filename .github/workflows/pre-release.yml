@@ -1,7 +1,7 @@
 name: Update pre-release
-on: 
+on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
@@ -11,7 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create Alpine overlay file
-        run: tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl .
+        run: |
+          chmod 0600 apkovl/etc/iptables/rules*
+          tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl .
       - name: Create iSH overlay file
         run: tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
       - uses: ncipollo/release-action@v1
