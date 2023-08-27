@@ -7,7 +7,7 @@ while IFS= read -r line; do
     file="/etc/subuid"
     start="$(( $(echo "$line" | cut -d: -f3) * 65536))"
 
-    if ! grep "^${user}" "${file}"; then
+    if ! grep -q "^${user}" "${file}"; then
       echo "${user}:${start}:65536" | tee -a "${file}"
     fi
   fi
@@ -21,7 +21,7 @@ while IFS= read -r line; do
     file="/etc/subgid"
     start="$(( $(echo "$line" | cut -d: -f4) * 65536))"
 
-    if ! grep "^${user}" "${file}"; then
+    if ! grep -q "^${user}" "${file}"; then
       echo "${user}:${start}:65536" | tee -a "${file}"
     fi
   fi
