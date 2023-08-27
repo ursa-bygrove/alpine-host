@@ -36,8 +36,8 @@ export SETUP_APKREPOS=false
 APKREPOSOPTS=""
 
 # Create admin user
+export ADDUSEROPTS="-D -s /usr/bin/tmux"
 USEROPTS="-a -g audio,video,netdev,docker dk"
-ADDUSEROPTS="-D -s /usr/bin/tmux"
 USERSSHKEY="${VULTRAPI}/public-keys"
 
 # Install Openssh
