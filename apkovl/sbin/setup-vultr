@@ -25,3 +25,9 @@ done
 echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f "/root/${0##*/}.answers"
+
+if type -P dockerd-rootless > /dev/null; then
+  echo
+  echo "Updating subuid and subgid for new users ..."
+  /usr/local/sbin/setup-subids
+fi
