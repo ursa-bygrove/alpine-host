@@ -23,7 +23,6 @@ apk add \
   tmux
 
 SERVICES="crond ip6tables iptables local"
-rm -f /etc/profile.d/*.disabled
 
 # Disable root login
 # Initial login, after PXE boot, is controlled by /etc/securetty in apkovl file
