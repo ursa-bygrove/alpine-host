@@ -32,13 +32,14 @@
 -			*) return 1;;
 -		esac
 -		echo "Enter password again to unlock disk for installation." >&2
-+	cryptsetup luksFormat --key-file "${CRYPT_KEYFILE}" --batch-mode --type luks2 /dev/vda3
-+
-+	cryptsetup luksAddKey "/dev/mapper/${dmname}" "${keyfile}"
- 		cryptsetup open "$dev" "$dmname" >&2 \
+-		cryptsetup open "$dev" "$dmname" >&2 \
 -			&& break
 -		echo "" >&2
 -	done
++	cryptsetup luksFormat --key-file "${CRYPT_KEYFILE}" --batch-mode --type luks2 /dev/vda3
++
++	cryptsetup luksAddKey --key-file "${CRYPT_KEYFILE}" "/dev/mapper/${dmname}" "${keyfile}"
++	cryptsetup open --key-file "${CRYPT_KEYFILE}" "$dev" "$dmname" >&2 \
 +
  	echo "/dev/mapper/$dmname"
  	return 0
