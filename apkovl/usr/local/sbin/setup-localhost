@@ -27,13 +27,6 @@ SERVICES="crond ip6tables iptables local"
 # Disable root login
 # Initial login, after PXE boot, is controlled by /etc/securetty in apkovl file
 :> /etc/securetty
-
-# Make tmux available as a login shell
-if type -P tmux > /dev/null && [ ! grep -q tmux /etc/shells ]; then
-  echo
-  echo "Configuring additional login shells..."
-  type -P tmux | tee -a /etc/shells
-fi
 passwd -l root || :
 
 # Setup containerization services
