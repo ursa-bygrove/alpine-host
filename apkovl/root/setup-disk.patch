@@ -11,7 +11,17 @@
  	if [ -n "$raidmod" ]; then
  		echo "/sbin/mdadm" > "$mnt"/etc/mkinitfs/features.d/raid.files
  		echo "/etc/mdadm.conf" >> "$mnt"/etc/mkinitfs/features.d/raid.files
-@@ -1286,26 +1290,16 @@
+@@ -1214,6 +1218,9 @@
+ 	mkfs.$ROOTFS $MKFS_OPTS_ROOT $mkfs_args "$root_dev"
+ 	mkdir -p "$SYSROOT"
+ 	mount -t $ROOTFS $root_dev "$SYSROOT" || return 1
++	# if [ -n "${USE_CRYPT}" ]; then
++	# 	cryptsetup luksAddKey --key-file "${CRYPT_KEYFILE}" "${root_dev}" "${CRYPT_KEYFILE}"
++	# fi
+ 	if [ -n "$boot_dev" ]; then
+ 		# use separate esp partirion with UEFI but without crypt
+ 		if [ -n "$USE_EFI" ] && [ -z "$USE_CRYPT" ]; then
+@@ -1286,26 +1293,16 @@
  setup_crypt() {
  	local dev="$1" local dmname="$2"
  	mkdir -p /run/cryptsetup
@@ -21,7 +31,7 @@
 -		echo "If you forget your password, your data will be lost." >&2
 -		cryptsetup luksFormat --batch-mode --verify-passphrase \
 -			--type luks2 "$dev" >&2
-+	#
++
  		# Error codes are: 1 wrong parameters, 2 no permission (bad
  		# passphrase), 3 out of memory, 4 wrong device specified, 5 device
  		# already exists or device is busy.
@@ -36,15 +46,15 @@
 -			&& break
 -		echo "" >&2
 -	done
-+	cryptsetup luksFormat --key-file "${CRYPT_KEYFILE}" --batch-mode --type luks2 /dev/vda3
++	cryptsetup luksFormat --key-file "${CRYPT_KEYFILE}" --batch-mode --type luks2 "$dev" >&2
 +
-+	cryptsetup luksAddKey --key-file "${CRYPT_KEYFILE}" "/dev/mapper/${dmname}" "${keyfile}"
-+	cryptsetup open --key-file "${CRYPT_KEYFILE}" "$dev" "$dmname" >&2 \
++	cryptsetup open --key-file "${CRYPT_KEYFILE}" "$dev" "$dmname" >&2
++	cryptsetup luksAddKey "/dev/mapper/${dmname}" "${CRYPT_KEYFILE}" >&2
 +
  	echo "/dev/mapper/$dmname"
  	return 0
  }
-@@ -1592,6 +1586,12 @@
+@@ -1592,6 +1589,12 @@
  	arm*|aarch64) : ${BOOTLOADER:=u-boot};;
  esac
  
@@ -57,7 +67,7 @@
  if [ -d "$1" ]; then
  	# install to given mounted root
  	apk add --quiet $(select_bootloader_pkg)
-@@ -1726,4 +1726,3 @@
+@@ -1726,4 +1729,3 @@
  none) exit 0;;
  *) die "Not a valid install mode: $DISK_MODE" ;;
  esac
