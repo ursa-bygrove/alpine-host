@@ -1,16 +1,34 @@
 --- /sbin/setup-disk.orig
 +++ /sbin/setup-disk
+@@ -645,7 +645,7 @@
+ 
+ 	if crypt_required <"$mnt"/etc/fstab; then
+ 		use_crypt=1
+-		initfs_features="$initfs_features cryptsetup keymap"
++		initfs_features="$initfs_features cryptsetup cryptkey keymap"
+ 		if is_nvme_dev "$ROOT"/sys/block/dm-*/slaves/*; then
+ 			initfs_features="$initfs_features nvme"
+ 		fi
 @@ -654,6 +654,10 @@
  	# generate mkinitfs.conf
  	mkdir -p "$mnt"/etc/mkinitfs/features.d
  	echo "features=\"$initfs_features\"" > "$mnt"/etc/mkinitfs/mkinitfs.conf
 +	if [ -n "${use_crypt}" ]; then
-+		echo "static=\"${CRYPT_KEYFILE}\"" >> "$mnt"/etc/mkinitfs/mkinitfs.conf
++		echo "${CRYPT_KEYFILE}" > "$mnt"/etc/mkinitfs/features.d/cryptkey.files
 +	fi
 +
  	if [ -n "$raidmod" ]; then
  		echo "/sbin/mdadm" > "$mnt"/etc/mkinitfs/features.d/raid.files
  		echo "/etc/mdadm.conf" >> "$mnt"/etc/mkinitfs/features.d/raid.files
+@@ -677,7 +681,7 @@
+ 		if cryptsetup status "$cryptroot" 2>&1 >/dev/null; then
+ 			cryptroot=$(cryptsetup status "$cryptroot" | awk '/device:/ { print $2 }')
+ 			cryptroot=$(uuid_or_device $cryptroot)
+-			kernel_opts="cryptroot=$cryptroot cryptdm=root $kernel_opts"
++			kernel_opts="cryptroot=$cryptroot cryptkey=rootfs:${CRYPT_KEYFILE} cryptdm=root $kernel_opts"
+ 			root=$([ -n "$pvs" ] && echo "$rootdev" || echo "/dev/mapper/root")
+ 		fi
+ 
 @@ -1214,6 +1218,9 @@
  	mkfs.$ROOTFS $MKFS_OPTS_ROOT $mkfs_args "$root_dev"
  	mkdir -p "$SYSROOT"
