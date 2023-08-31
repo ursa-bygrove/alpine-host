@@ -64,8 +64,8 @@
 -		echo "" >&2
 -	done
 +	cryptsetup luksFormat --key-file "${CRYPT_KEYFILE}" --batch-mode --type luks2 "$dev" >&2
++	cryptsetup luksAddKey --key-file "${CRYPT_KEYFILE}" "$dev" "${CRYPT_KEYFILE}" >&2
 +	cryptsetup open --key-file "${CRYPT_KEYFILE}" "$dev" "$dmname" >&2
-+	cryptsetup luksAddKey "$dev" "${CRYPT_KEYFILE}" >&2
 +
  	echo "/dev/mapper/$dmname"
  	return 0
