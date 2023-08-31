@@ -1,5 +1,14 @@
 --- /sbin/setup-disk.orig
 +++ /sbin/setup-disk
+@@ -374,7 +374,7 @@
+ 	local exlinux_raidopt=
+ 
+ 	sed -e "s:^root=.*:root=$root:" \
+-		-e "s:^default_kernel_opts=.*:default_kernel_opts=\"$kernel_opts\":" \
++		-e "s#^default_kernel_opts=.*#default_kernel_opts=\"$kernel_opts\"#" \
+ 		-e "s:^modules=.*:modules=$modules:" \
+ 		/etc/update-extlinux.conf > "$mnt"/etc/update-extlinux.conf
+ 
 @@ -645,7 +645,7 @@
  
  	if crypt_required <"$mnt"/etc/fstab; then
