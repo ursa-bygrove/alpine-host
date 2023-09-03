@@ -22,4 +22,4 @@ if [ ! -S "${symlink}" ]; then
   fi
 fi
 
-echo "${symlink} -> ${SSH_AUTH_SOCK}"
+echo "${symlink} -> $(readlink "${symlink}")"
