@@ -7,17 +7,16 @@ fi
 
 setup-localhost
 
-# Create patches with:
-#   diff -dw /path/to/file.orig /path/to/file
 echo
-echo "Customising setup scripts ..."
-for patch in /root/*.patch; do
-  ( cd / && patch -ubf -p0 -i "${patch}" || true )
-done
+echo "Applying root patches ..."
+/root/apply-patches
 
 echo
 echo "Updating lbu paths ..."
-lbu add /root/.exrc /usr/local
+lbu add \
+  /root/.exrc \
+  /root/apply-patches \
+  /usr/local
 for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
   lbu add "${file}" "${file}."*
 done
@@ -26,7 +25,7 @@ echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f "/root/${0##*/}.answers"
 
-if type -P dockerd-rootless > /dev/null; then
+if type -t dockerd-rootless > /dev/null; then
   echo
   /usr/local/sbin/setup-subids
 fi
