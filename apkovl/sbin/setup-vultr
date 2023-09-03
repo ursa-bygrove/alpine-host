@@ -8,7 +8,6 @@ fi
 setup-localhost
 
 echo
-echo "Applying root patches ..."
 /root/apply-patches
 
 echo
