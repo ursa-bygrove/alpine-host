@@ -34,7 +34,7 @@
  			cryptroot=$(cryptsetup status "$cryptroot" | awk '/device:/ { print $2 }')
  			cryptroot=$(uuid_or_device $cryptroot)
 -			kernel_opts="cryptroot=$cryptroot cryptdm=root $kernel_opts"
-+			kernel_opts="cryptroot=$cryptroot cryptkey=rootfs:${CRYPT_KEYFILE} cryptdm=root $kernel_opts"
++			kernel_opts="cryptkey=rootfs:${CRYPT_KEYFILE} cryptroot=$cryptroot cryptdm=root $kernel_opts"
  			root=$([ -n "$pvs" ] && echo "$rootdev" || echo "/dev/mapper/root")
  		fi
  
