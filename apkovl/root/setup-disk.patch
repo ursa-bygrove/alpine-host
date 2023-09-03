@@ -14,7 +14,7 @@
  	if crypt_required <"$mnt"/etc/fstab; then
  		use_crypt=1
 -		initfs_features="$initfs_features cryptsetup keymap"
-+		initfs_features="$initfs_features cryptsetup cryptkey keymap"
++		initfs_features="cryptkey $initfs_features cryptsetup keymap"
  		if is_nvme_dev "$ROOT"/sys/block/dm-*/slaves/*; then
  			initfs_features="$initfs_features nvme"
  		fi
