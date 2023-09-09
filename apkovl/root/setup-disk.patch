@@ -1,0 +1,67 @@
+--- /sbin/setup-disk.orig
++++ /sbin/setup-disk
+@@ -1283,29 +1283,42 @@
+ 	setup_root $root_dev $BOOT_DEV
+ }
+ 
+-setup_crypt() {
+-	local dev="$1" local dmname="$2"
+-	mkdir -p /run/cryptsetup
+-	while true; do
++read_passphrase() {
++	local dev="${1:?Missing argument -- device path}"
++
+ 		echo "Preparing partition for encryption." >&2
+ 		echo "You will be prompted for your password at boot." >&2
+ 		echo "If you forget your password, your data will be lost." >&2
+-		cryptsetup luksFormat --batch-mode --verify-passphrase \
+-			--type luks2 "$dev" >&2
+-		# Error codes are: 1 wrong parameters, 2 no permission (bad
+-		# passphrase), 3 out of memory, 4 wrong device specified, 5 device
+-		# already exists or device is busy.
++	while true; do
++		read -sp "Enter passphrase for ${dev}: " passphrase1
++		read -sp "Verify passphrase: " passphrase2
++		[ "${passphrase1}" = "${passphrase2}" ] && break
++		echo "Passwords do not match" >&2
++	done
++	echo "${passphrase1}"
++}
++
++setup_crypt() {
++	local dev="${1:?Missing argument -- device path}"
++	local dmname="${2:?Missing argument -- device mapper name}"
++	local luksFormat_succeeded='false'
++	local passphrase="${CRYPT_PASSPHRASE:-$(read_passphrase "$dev")}"
++
++	mkdir -p /run/cryptsetup
++	echo "${passphrase}" | cryptsetup luksFormat --batch-mode --type luks2 "$dev" >&2
+ 		# https://man7.org/linux/man-pages/man8/cryptsetup.8.html#RETURN_CODES
+ 		case $? in
+-			2) continue;;
+-			0) ;;
+-			*) return 1;;
++		0) luksFormat_succeeded='true';;
++		1) echo "cryptsetup: wrong parameters" >&2;;
++		2) echo "setup-disk: no permission (bad pasphrase)" >&2;;
++		3) echo "setup-disk: out of memory" >&2;;
++		4) echo "setup-disk: wrong device specified -- ${dev}" >&2;;
++		5) echo "setup-disk: device already exists or busy -- ${dev}" >&2;;
++		*) echo "cryptsetup: unknown error code -- $?" >&2;;
+ 		esac
+-		echo "Enter password again to unlock disk for installation." >&2
+-		cryptsetup open "$dev" "$dmname" >&2 \
+-			&& break
+-		echo "" >&2
+-	done
++	"${luksFormat_succeeded}" || return 1
++	echo "${passphrase}" | cryptsetup open "$dev" "$dmname" >&2
++
+ 	echo "/dev/mapper/$dmname"
+ 	return 0
+ }
+@@ -1726,4 +1739,3 @@
+ none) exit 0;;
+ *) die "Not a valid install mode: $DISK_MODE" ;;
+ esac
+-
