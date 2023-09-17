@@ -14,6 +14,7 @@ apk add \
   docker-rootless-extras@edge \
   docs \
   drill \
+  git \
   ip6tables \
   iptables \
   iproute2 \
@@ -25,7 +26,7 @@ apk add \
 SERVICES="crond ip6tables iptables local"
 
 # Disable root login
-# Initial login, after PXE boot, is controlled by /etc/securetty in apkovl file
+# Login at PXE boot, is controlled by /etc/securetty in apkovl file
 :> /etc/securetty
 passwd -l root || :
 
