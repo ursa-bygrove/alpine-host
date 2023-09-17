@@ -1,0 +1,32 @@
+name: Update development release
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  pre-release:
+    name: Update development release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract branch name
+        run: echo "BRANCH_NAME='$(echo ${GITHUB_REF#refs/heads/})'" >> $GITHUB_ENV
+      - name: Create Alpine overlay file
+        run: |
+          chmod 0600 apkovl/etc/iptables/rules*
+          tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl .
+      - name: Create iSH overlay file
+        run: tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
+      - uses: ncipollo/release-action@v1
+        with:
+          name: Development Release
+          generateReleaseNotes: true
+          artifacts: "*.pxe,*.tar.gz"
+          artifactErrorsFailBuild: true
+
+          tag: {{ env.BRANCH_NAME }}
+          makeLatest: false
+          prerelease: true
+          allowUpdates: true
+          removeArtifacts: true
