@@ -17,7 +17,7 @@ _ip() {
 resources='  %-18s %11s %11s %11s      %s\n'
 connections='  %-6s %23s %23s      %s\n'
 
-cat << EOF
+cat << EOF > /etc/motd
 $(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))
 Time:  $(date)
   Up:  $(_uptime)
@@ -30,9 +30,6 @@ $(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note=""
 $(printf "%-12s %19s${connections#*%*%*s}" 'Connections:' 'Local' 'Remote')
 $(ss -Htunl | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
 $(ss -Htun | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
-
-Past users:
-$(last | awk -F "   +" 'FNR>=2 { if (!($1 in row)) { row[$1]=$NF } } END { for (u in row) { print "  " row[u] " - " u } }')
 
 Load average:
   $(cat /proc/loadavg | awk '{ print "1 min - " $1 "%  5 min - " $2 "%  15 min - " $3 "%" }')
