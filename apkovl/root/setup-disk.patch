@@ -1,6 +1,6 @@
 --- /sbin/setup-disk.orig
 +++ /sbin/setup-disk
-@@ -1283,29 +1283,42 @@
+@@ -1283,29 +1283,47 @@
  	setup_root $root_dev $BOOT_DEV
  }
  
@@ -21,8 +21,12 @@
 -		# already exists or device is busy.
 +	while true; do
 +		read -sp "Enter passphrase for ${dev}: " passphrase1
++		echo
 +		read -sp "Verify passphrase: " passphrase2
-+		[ "${passphrase1}" = "${passphrase2}" ] && break
++		if [ "${passphrase1}" = "${passphrase2}" ]; then
++			echo "Passphrase confirmed."
++			break
++		fi
 +		echo "Passwords do not match" >&2
 +	done
 +	echo "${passphrase1}"
@@ -35,6 +39,7 @@
 +	local passphrase="${CRYPT_PASSPHRASE:-$(read_passphrase "$dev")}"
 +
 +	mkdir -p /run/cryptsetup
++	echo "Running cryptsetup on ${dev} ..." >&2
 +	echo "${passphrase}" | cryptsetup luksFormat --batch-mode --type luks2 "$dev" >&2
  		# https://man7.org/linux/man-pages/man8/cryptsetup.8.html#RETURN_CODES
  		case $? in
@@ -43,10 +48,10 @@
 -			*) return 1;;
 +		0) luksFormat_succeeded='true';;
 +		1) echo "cryptsetup: wrong parameters" >&2;;
-+		2) echo "setup-disk: no permission (bad pasphrase)" >&2;;
-+		3) echo "setup-disk: out of memory" >&2;;
-+		4) echo "setup-disk: wrong device specified -- ${dev}" >&2;;
-+		5) echo "setup-disk: device already exists or busy -- ${dev}" >&2;;
++		2) echo "cryptsetup: no permission (bad pasphrase)" >&2;;
++		3) echo "cryptsetup: out of memory" >&2;;
++		4) echo "cryptsetup: wrong device specified -- ${dev}" >&2;;
++		5) echo "cryptsetup: device already exists or busy -- ${dev}" >&2;;
 +		*) echo "cryptsetup: unknown error code -- $?" >&2;;
  		esac
 -		echo "Enter password again to unlock disk for installation." >&2
@@ -60,7 +65,7 @@
  	echo "/dev/mapper/$dmname"
  	return 0
  }
-@@ -1726,4 +1739,3 @@
+@@ -1726,4 +1744,3 @@
  none) exit 0;;
  *) die "Not a valid install mode: $DISK_MODE" ;;
  esac
