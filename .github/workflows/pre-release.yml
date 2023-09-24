@@ -9,7 +9,7 @@ jobs:
     name: Update pre-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create Alpine overlay file
         run: |
           chmod 0600 apkovl/etc/iptables/rules*
