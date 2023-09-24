@@ -10,8 +10,6 @@ apk update
 apk add \
   curl \
   doas-sudo-shim \
-  docker-cli-compose@edge \
-  docker-rootless-extras@edge \
   docs \
   drill \
   ip6tables \
@@ -20,19 +18,42 @@ apk add \
   keychain \
   mandoc \
   patch \
+  podman \
+  podman-docker\
   tmux
 
 SERVICES="crond ip6tables iptables local"
 
 # Disable root login
-# Login at PXE boot, is controlled by /etc/securetty in apkovl file
-:> /etc/securetty
 passwd -l root || :
 
+# Apply setup patches
+echo
+/root/apply-patches
+
+# Include all patched files when installing
+for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
+  lbu add "${file}" "${file}."*
+done
+
+# Include other files when installing
+lbu add \
+  /root/.exrc \
+  /root/* \
+  /usr/local
+
+echo
+echo "Running setup-alpine ..."
+/sbin/setup-alpine -e -f /root/setup-vultr.answers
+
 # Setup containerization services
-if type -P dockerd-rootless > /dev/null; then
+if type -t podman > /dev/null; then
+  # https://wiki.alpinelinux.org/wiki/Podman
+  modprobe tun
+  echo tun >>/etc/modules
+
   echo
-  echo "Enabling cgroups v2 required by docker-rootless ..."
+  echo "Enabling cgroups v2 ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
   SERVICES="${SERVICES} cgroups"
   /usr/local/sbin/setup-subids
