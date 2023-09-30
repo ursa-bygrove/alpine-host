@@ -13,9 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup branch name variable
-        run: echo "GIT_BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
       - name: Create Alpine overlay file
         run: |
           chmod 0600 apkovl/etc/iptables/rules*
@@ -25,19 +22,12 @@ jobs:
         run: |
           tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
 
-      # - name: Create development tag
-      #   run: |
-      #     ls -l ~ || :
-      #     git show-ref
-      #     git tag -f podman
-      #     git push origin ${{ github.ref }}
-
       - name: Create development release
         run: |
+          GIT_BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \
             --target "${GITHUB_REF}" \
-            --title "Development: ${GIT_BRANCH_NAME}" \
             *.pxe *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
