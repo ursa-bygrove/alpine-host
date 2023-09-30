@@ -25,12 +25,12 @@ jobs:
         run: |
           tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
 
-      - name: Create development tag
-        run: |
-          ls -l ~ || :
-          git show-ref
-          git tag -f podman
-          git push origin ${{ github.ref }}
+      # - name: Create development tag
+      #   run: |
+      #     ls -l ~ || :
+      #     git show-ref
+      #     git tag -f podman
+      #     git push origin ${{ github.ref }}
 
       - name: Create development release
         run: |
@@ -38,7 +38,6 @@ jobs:
             --generate-notes \
             --target "${GITHUB_REF}" \
             --title "Development: ${GIT_BRANCH_NAME}" \
-            --verify-tag \
             *.pxe *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
