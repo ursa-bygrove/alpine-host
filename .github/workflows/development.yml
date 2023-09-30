@@ -25,8 +25,8 @@ jobs:
           generateReleaseNotes: true
           artifacts: "*.pxe,*.tar.gz"
           artifactErrorsFailBuild: true
-          tag: {{ env.BRANCH_NAME }}
+          tag: ${{ env.BRANCH_NAME }}
           makeLatest: false
-          prerelease: true
+          prerelease: false
           allowUpdates: true
           removeArtifacts: true
