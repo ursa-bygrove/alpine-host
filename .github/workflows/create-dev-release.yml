@@ -27,7 +27,7 @@ jobs:
 
       - name: Create development tag
         run: |
-          cat ~/.gitconfig
+          ls -l ~ || :
           git show-ref
           git tag -f podman
           git push origin ${{ github.ref }}
