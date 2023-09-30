@@ -3,6 +3,7 @@ on:
   push:
     branches-ignore:
       - master
+      - dependabot/*
 
 jobs:
   pre-release:
@@ -24,7 +25,6 @@ jobs:
           generateReleaseNotes: true
           artifacts: "*.pxe,*.tar.gz"
           artifactErrorsFailBuild: true
-
           tag: {{ env.BRANCH_NAME }}
           makeLatest: false
           prerelease: true
