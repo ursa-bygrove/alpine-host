@@ -27,7 +27,7 @@ jobs:
 
       - name: Create development tag
         run: |
-          git tag "${GIT_BRANCH_NAME}"
+          git tag -f "${GIT_BRANCH_NAME}"
           git push origin "${GIT_BRANCH_NAME}"
 
       - name: Create development release
