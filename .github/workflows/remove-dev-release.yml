@@ -1,0 +1,26 @@
+name: Delete development releases
+on:
+  delete:
+    branches-ignore:
+      - master
+      - dependabot/*
+
+jobs:
+  cleanup:
+    name: Delete development release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup GitHub CLI
+        run: gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup branch name variable
+        run: echo "GIT_BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+      - name: Delete GitHub Release & its Tag
+        run: |
+          gh release delete "${GIT_BRANCH_NAME}" --yes --cleanup-tag
+          git push origin "${GIT_BRANCH_NAME}"
+        continue-on-error: true

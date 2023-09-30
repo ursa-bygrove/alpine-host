@@ -1,0 +1,43 @@
+name: Create development releases
+on:
+  push:
+    branches-ignore:
+      - master
+      - dependabot/*
+
+jobs:
+  development:
+    name: Create development release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup GitHub CLI
+        run: gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup branch name variable
+        run: echo "GIT_BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+      - name: Create Alpine overlay file
+        run: |
+          chmod 0600 apkovl/etc/iptables/rules*
+          tar czf apkovl.tar.gz --owner=0 --group=0 -C apkovl .
+
+      - name: Create iSH overlay file
+        run: |
+          tar czf ishovl.tar.gz --owner=0 --group=0 -C ishovl .
+
+      - name: Create development tag
+        run: |
+          git tag -a "${GIT_BRANCH_NAME}"
+          git push origin "${GIT_BRANCH_NAME}"
+
+      - name: Create development release
+        run: |
+          gh release create "${GIT_BRANCH_NAME}" \
+            --generate-notes \
+            --target "${GITHUB_REF}" \
+            --title "Development: ${GIT_BRANCH_NAME}" \
+            --verify-tag \
+            *.pxe *.tar.gz
