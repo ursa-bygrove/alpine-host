@@ -27,12 +27,10 @@ jobs:
 
       - name: Create development tag
         run: |
-          git tag -f "${GIT_BRANCH_NAME}"
-          git push origin "${GIT_BRANCH_NAME}"
+          git tag -f ${{ github.ref }}
+          git push origin ${{ github.ref }}
 
       - name: Create development release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \
@@ -40,3 +38,5 @@ jobs:
             --title "Development: ${GIT_BRANCH_NAME}" \
             --verify-tag \
             *.pxe *.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -17,9 +17,9 @@ jobs:
         run: echo "GIT_BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
       - name: Delete GitHub Release & its Tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete "${GIT_BRANCH_NAME}" --yes --cleanup-tag
           git push origin "${GIT_BRANCH_NAME}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
