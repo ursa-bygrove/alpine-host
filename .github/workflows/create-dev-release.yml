@@ -13,11 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup GitHub CLI
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh auth login
-
       - name: Setup branch name variable
         run: echo "GIT_BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
@@ -36,6 +31,8 @@ jobs:
           git push origin "${GIT_BRANCH_NAME}"
 
       - name: Create development release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \
