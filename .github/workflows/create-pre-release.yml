@@ -1,0 +1,48 @@
+name: Create release candidate
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  pre-release:
+    name: Create release candidate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Alpine overlay file (apkovl)
+        run: |
+          chmod 0600 apkovl/etc/iptables/rules*
+          tar czf apkovl.tar.gz \
+            --owner=0 \
+            --group=0 \
+            -C apkovl .
+
+      - name: Create iSH overlay file (ishovl)
+        run: |
+          tar czf ishovl.tar.gz \
+            --owner=0 \
+            --group=0 \
+            -C ishovl .
+
+      - name: Delete development release and tag
+        run: |
+          gh release delete "pre-release" \
+            --yes \
+            --cleanup-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Create development release and tag
+        run: |
+          gh release create "pre-release" \
+            --generate-notes \
+            --latest=false \
+            --prerelease \
+            --title "Release Candidate" \
+            *.pxe *.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
