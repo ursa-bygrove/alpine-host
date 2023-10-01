@@ -13,10 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Delete GitHub Release & its Tag
+      - name: Delete development release and tag
         run: |
-          GIT_BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          gh release delete "${GIT_BRANCH_NAME}" --yes --cleanup-tag
+          gh release delete "${GITHUB_REF#refs/heads/}" \
+            --yes \
+            --cleanup-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
