@@ -44,6 +44,7 @@ jobs:
         run: |
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \
+            --latest=false \
             --target "${GITHUB_REF}" \
             --title "Development: ${GIT_BRANCH_NAME}" \
             *.pxe *.tar.gz
