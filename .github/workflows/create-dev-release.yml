@@ -52,7 +52,7 @@ jobs:
             --generate-notes \
             --latest=false \
             --target "${GITHUB_REF}" \
-            --title "Development: ${GIT_BRANCH_NAME}" \
+            --title "Dev: ${GIT_BRANCH_NAME}" \
             *.pxe *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
