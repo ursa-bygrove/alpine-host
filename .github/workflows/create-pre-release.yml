@@ -33,7 +33,13 @@ jobs:
             --group=0 \
             -C ishovl .
 
+      - name: Create development release tag
         run: |
+          git config user.name Github Actions
+          git config user.email github-actions@github.com
+          git tag --force "pre-release"
+          git push origin --tags --force
+
       - name: Delete previous pre-release
         run: |
           gh release delete "pre-release" --yes

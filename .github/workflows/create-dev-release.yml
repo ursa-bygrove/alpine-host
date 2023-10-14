@@ -38,7 +38,13 @@ jobs:
             --group=0 \
             -C ishovl .
 
+      - name: Create development release tag
         run: |
+          git config user.name Github Actions
+          git config user.email github-actions@github.com
+          git tag --force "${GIT_BRANCH_NAME}"
+          git push origin --tags --force
+
       - name: Delete previous development release
         run: |
           gh release delete "${GIT_BRANCH_NAME}" --yes
