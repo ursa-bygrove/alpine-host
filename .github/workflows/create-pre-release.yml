@@ -33,7 +33,7 @@ jobs:
             --group=0 \
             -C ishovl .
 
-      - name: Delete development release and tag
+      - name: Delete "pre-release" release and tag
         run: |
           gh release delete "pre-release" \
             --yes \
@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Create development release and tag
+      - name: Create "pre-release" release and tag
         run: |
           gh release create "pre-release" \
             --generate-notes \
