@@ -1,19 +1,21 @@
 #!ipxe
 
-set mirror http://dl-cdn.alpinelinux.org/alpine
-set branch latest-stable
-set arch x86_64
-set flavor virt
+set alpine_mirror http://dl-cdn.alpinelinux.org/alpine
+set alpine_branch latest-stable
+set alpine_arch x86_64
+set kernel_flavor virt
+set apkovl_release latest
 
-set cmd modules=loop,squashfs quiet nomodeset
+set alpine_repo alpine_repo=${alpine_mirror}/${alpine_branch}/main
+set alpine_image ${alpine_mirror}/${alpine_branch}/releases/${alpine_arch}/netboot
+
 set console console=tty0
-set apkovl apkovl=https://github.com/ursa-bygrove/alpine-host/releases/download/pre-release/apkovl.tar.gz
+set kernel_cmd modules=loop,squashfs quiet nomodeset
+set modloop modloop=${alpine_image}/modloop-${kernel_flavor}
+set apkovl apkovl=https://github.com/ursa-bygrove/alpine-host/releases/download/${apkovl_release}/apkovl.tar.gz
 
-set img-url ${mirror}/${branch}/releases/${arch}/netboot
-set alpine_repo alpine_repo=${mirror}/${branch}/main
-set modloop modloop=${img-url}/modloop-${flavor}
-kernel ${img-url}/vmlinuz-${flavor} ${cmd} ${alpine_repo} ${modloop} ${apkovl} ${console}
-initrd ${img-url}/initramfs-${flavor}
+kernel ${alpine_image}/vmlinuz-${kernel_flavor} ${kernel_cmd} ${alpine_repo} ${modloop} ${apkovl} ${console}
+initrd ${alpine_image}/initramfs-${kernel_flavor}
 
 boot
 exit 0
