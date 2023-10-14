@@ -38,16 +38,21 @@ jobs:
             --group=0 \
             -C ishovl .
 
-      - name: Delete development release and tag
+      - name: Create development release tag
         run: |
-          gh release delete "${GIT_BRANCH_NAME}" \
-            --yes \
-            --cleanup-tag
+          git config user.name Github Actions
+          git config user.email github-actions@github.com
+          git tag --force "${GIT_BRANCH_NAME}"
+          git push origin --tags --force
+
+      - name: Delete previous development release
+        run: |
+          gh release delete "${GIT_BRANCH_NAME}" --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Create development release and tag
+      - name: Create new development release
         run: |
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \

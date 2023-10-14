@@ -16,6 +16,7 @@ jobs:
 
       - name: Delete development release and tag
         run: |
+          env
           echo "-=[${GITHUB_REF#refs/heads/}]=-"
           gh release delete "${GITHUB_REF#refs/heads/}" \
             --yes \
