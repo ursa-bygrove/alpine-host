@@ -4,10 +4,10 @@ on:
     branches-ignore:
       - master
       - dependabot/*
-      - refs/tags/*
 
 jobs:
   cleanup:
+    if: github.event.ref_type == 'branch'
     name: Delete development release
     runs-on: ubuntu-latest
     steps:
@@ -17,10 +17,11 @@ jobs:
       - name: Delete development release and tag
         run: |
           env
-          echo "-=[${GITHUB_REF#refs/heads/}]=-"
-          gh release delete "${GITHUB_REF#refs/heads/}" \
+          echo "-=[${GITHUB_EVENT_REF#refs/heads/}]=-"
+          gh release delete "${GITHUB_EVENT_REF_REF#refs/heads/}" \
             --yes \
             --cleanup-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_EVENT_REF: ${{ github.event.ref }}
         continue-on-error: true
