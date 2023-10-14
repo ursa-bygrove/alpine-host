@@ -12,6 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Configure apkovl file location
+        run: |
+          sed -i \
+            -E 's/^(set apkovl_release) \w+$/\1 pre-release/' \
+            ./default.pxe ./manual.pxe
+
       - name: Create Alpine overlay file (apkovl)
         run: |
           chmod 0600 apkovl/etc/iptables/rules*
@@ -27,7 +33,7 @@ jobs:
             --group=0 \
             -C ishovl .
 
-      - name: Delete development release and tag
+      - name: Delete "pre-release" release and tag
         run: |
           gh release delete "pre-release" \
             --yes \
@@ -36,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Create development release and tag
+      - name: Create "pre-release" release and tag
         run: |
           gh release create "pre-release" \
             --generate-notes \
