@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Create development release and tag
+      - name: Create new development release
         run: |
           gh release create "${GIT_BRANCH_NAME}" \
             --generate-notes \

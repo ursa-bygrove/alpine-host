@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      - name: Create "pre-release" release and tag
+      - name: Create new pre-release
         run: |
           gh release create "pre-release" \
             --generate-notes \
