@@ -33,11 +33,10 @@ jobs:
             --group=0 \
             -C ishovl .
 
-      - name: Delete "pre-release" release and tag
         run: |
-          gh release delete "pre-release" \
-            --yes \
-            --cleanup-tag
+      - name: Delete previous pre-release
+        run: |
+          gh release delete "pre-release" --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true

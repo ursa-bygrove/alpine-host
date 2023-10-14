@@ -38,11 +38,10 @@ jobs:
             --group=0 \
             -C ishovl .
 
-      - name: Delete development release and tag
         run: |
-          gh release delete "${GIT_BRANCH_NAME}" \
-            --yes \
-            --cleanup-tag
+      - name: Delete previous development release
+        run: |
+          gh release delete "${GIT_BRANCH_NAME}" --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
