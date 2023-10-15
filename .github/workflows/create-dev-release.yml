@@ -9,7 +9,6 @@ on:
 
 jobs:
   development:
-    if: github.event.ref_type == 'branch'
     name: Create development release
     runs-on: ubuntu-latest
     steps:
