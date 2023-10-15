@@ -1,11 +1,11 @@
 name: Delete development releases
 on:
   delete:
-    branches:
-      - '**'
     branches-ignore:
       - master
       - dependabot/*
+    tags-ignore:
+      - '**'
 
 jobs:
   cleanup:

@@ -1,11 +1,11 @@
 name: Create development releases
 on:
   push:
-    branches:
-      - '**'
     branches-ignore:
       - master
       - dependabot/*
+    tags-ignore:
+      - '**'
 
 jobs:
   development:
