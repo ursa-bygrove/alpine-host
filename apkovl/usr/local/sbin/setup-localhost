@@ -46,8 +46,12 @@ echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
 
+# Add production user
+adduser -s /bin/ash live live
+
 # Setup containerization services
 if type -t docker > /dev/null; then
+  addgroup live docker
   echo
   echo 'Enabling docker namespaces ... user: dockremap, group: dockremap'
   addgroup -S dockremap
