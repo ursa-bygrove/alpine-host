@@ -36,7 +36,7 @@ export SETUP_APKREPOS=false
 APKREPOSOPTS=""
 
 # Create admin user
-USEROPTS="-a -g audio,video,netdev,docker -s /bin/ash dk"
+USEROPTS="-a -g audio,video,netdev,docker -s /bin/ash dev"
 USERSSHKEY="${VULTRAPI}/public-keys"
 
 # Install Openssh
