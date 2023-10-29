@@ -3,7 +3,7 @@
 @@ -1283,29 +1283,47 @@
  	setup_root $root_dev $BOOT_DEV
  }
- 
+
 -setup_crypt() {
 -	local dev="$1" local dmname="$2"
 -	mkdir -p /run/cryptsetup
@@ -21,8 +21,9 @@
 -		# already exists or device is busy.
 +	while true; do
 +		read -sp "Enter passphrase for ${dev}: " passphrase1
-+		echo
++		echo ""
 +		read -sp "Verify passphrase: " passphrase2
++		echo ""
 +		if [ "${passphrase1}" = "${passphrase2}" ]; then
 +			echo "Passphrase confirmed."
 +			break
