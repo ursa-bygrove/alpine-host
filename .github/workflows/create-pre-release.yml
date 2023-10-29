@@ -26,13 +26,6 @@ jobs:
             --group=0 \
             -C apkovl .
 
-      - name: Create iSH overlay file (ishovl)
-        run: |
-          tar czf ishovl.tar.gz \
-            --owner=0 \
-            --group=0 \
-            -C ishovl .
-
       - name: Create development release tag
         run: |
           git config user.name Github Actions

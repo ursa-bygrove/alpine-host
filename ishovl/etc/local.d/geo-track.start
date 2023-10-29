@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Detect mobile devices
-if [ -c /dev/location ]; then
-  # Prevent iSH from sleeping in background
-  cat /dev/location > /dev/null &
-fi

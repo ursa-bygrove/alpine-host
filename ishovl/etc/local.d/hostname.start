@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# Detect mobile devises 
-if [ -c /dev/location ]; then
-
-  # Ensure that hostname reflects device name
-  /bin/hostname -s > /etc/hostname
-
-fi
