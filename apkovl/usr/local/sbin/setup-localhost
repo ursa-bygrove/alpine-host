@@ -10,8 +10,8 @@ apk update
 apk add \
   curl \
   doas-sudo-shim \
-  docker-cli-compose@edge \
-  docker-rootless-extras@edge \
+  docker \
+  docker-cli-compose \
   docs \
   drill \
   ip6tables \
@@ -22,7 +22,7 @@ apk add \
   patch \
   tmux
 
-SERVICES="crond ip6tables iptables local"
+SERVICES="crond docker ip6tables iptables local"
 
 # Disable root login
 passwd -l root || :
@@ -47,7 +47,11 @@ echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
 
 # Setup containerization services
-if type -t docker-rootless > /dev/null; then
+if type -t docker > /dev/null; then
+  echo
+  echo 'Enabling docker namespaces ... user: dockremap, group: dockremap'
+  addgroup -S dockremap
+  adduser -SDH -G dockremap dockremap
   echo
   echo "Enabling cgroups v2 ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
