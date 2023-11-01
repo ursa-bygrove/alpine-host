@@ -23,6 +23,9 @@ apk add \
   tmux
 
 SERVICES="crond docker ip6tables iptables local"
+PRODUCTION_USER='live'
+ADMIN_USER='dk'
+export ADMIN_USER
 
 # Disable root login
 passwd -l root || :
@@ -47,13 +50,12 @@ echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
 
 # Add production user
-for user in live; do
-  adduser -D -s /bin/ash "${user}"
+if [ -n "${PRODUCTION_USER}" ]; then
+  adduser -D -s /bin/ash "${PRODUCTION_USER}"
   sed -i \
-    -E "s/(PS1_RED_USERS:=)(root})/\1${user},\2/" \
+    -E "s/(PS1_RED_USERS:=)(root})/\1${PRODUCTION_USER},\2/" \
     /etc/profile.d/color_prompt.sh
-done
-unset user
+fi
 
 # Setup containerization services
 if type -t docker > /dev/null; then
