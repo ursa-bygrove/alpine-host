@@ -2,7 +2,7 @@
 if [ ! -d "${XDG_CONFIG_HOME}/.git" ]; then
   if [ -z "${XDG_CONFIG_REPO}" ]; then
     echo "Where are your XDG_CONFIG_HOME files stored?"
-    read -p "Git URL: " XDG_CONFIG_REPO
+    read -rp "Git URL: " XDG_CONFIG_REPO
   fi
   if [ -n "${XDG_CONFIG_REPO}" ]; then
     if type -t git > /dev/null; then
