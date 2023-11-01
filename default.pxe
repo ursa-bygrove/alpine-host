@@ -4,7 +4,7 @@ set alpine_mirror http://dl-cdn.alpinelinux.org/alpine
 set alpine_branch latest-stable
 set alpine_arch x86_64
 set kernel_flavor virt
-set apkovl_release latest
+set release_name latest
 
 set alpine_repo alpine_repo=${alpine_mirror}/${alpine_branch}/main
 set alpine_image ${alpine_mirror}/${alpine_branch}/releases/${alpine_arch}/netboot

@@ -21,7 +21,7 @@ jobs:
       - name: Configure apkovl file location
         run: |
           sed -i \
-            -E "s/^(set apkovl_release) \w+\$/\1 ${GIT_BRANCH_NAME}/" \
+            -E "s/^(set release_name) \w+\$/\1 ${GIT_BRANCH_NAME}/" \
             ./default.pxe ./manual.pxe
 
       - name: Create Alpine overlay file (apkovl)
