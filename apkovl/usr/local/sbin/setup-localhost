@@ -47,7 +47,13 @@ echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
 
 # Add production user
-adduser -D -s /bin/ash live live
+for user in live; do
+  adduser -D -s /bin/ash "${user}"
+  sed -i \
+    -E "s/(PS1_RED_USERS:=)(root})/\1${user},\2/" \
+    /etc/profile.d/color_prompt.sh
+done
+unset user
 
 # Setup containerization services
 if type -t docker > /dev/null; then
