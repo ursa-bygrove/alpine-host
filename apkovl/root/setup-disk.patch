@@ -25,7 +25,7 @@
 +		read -sp "Verify passphrase: " passphrase2
 +		echo '••••••••••••••••••••' >&2
 +		if [ "${passphrase1}" = "${passphrase2}" ]; then
-+			echo "Passphrase confirmed."
++			echo "Passphrase confirmed." >&2
 +			break
 +		fi
 +		echo "Passwords do not match" >&2
