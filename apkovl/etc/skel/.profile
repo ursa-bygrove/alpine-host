@@ -19,3 +19,6 @@ fi
 if [ -f "${XDG_CONFIG_HOME}/.profile" ]; then
   . "${XDG_CONFIG_HOME}/.profile"
 fi
+
+# Clean up old history files
+rm -f ~/.*sh_history
