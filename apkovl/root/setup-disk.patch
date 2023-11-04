@@ -21,9 +21,9 @@
 -		# already exists or device is busy.
 +	while true; do
 +		read -sp "Enter passphrase for ${dev}: " passphrase1
-+		echo $'\n'
++		echo '••••••••••••••••••••' >&2
 +		read -sp "Verify passphrase: " passphrase2
-+		echo $'\n'
++		echo '••••••••••••••••••••' >&2
 +		if [ "${passphrase1}" = "${passphrase2}" ]; then
 +			echo "Passphrase confirmed."
 +			break
