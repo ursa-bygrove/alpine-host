@@ -4,8 +4,10 @@ echo "Generating /etc/subuid for all users ..."
 while IFS= read -r line; do
   if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
     user="${line%%:*}"
-    file="/etc/subuid"
     start="$(( $(echo "$line" | cut -d: -f3) * 65536))"
+
+    file="/etc/subuid"
+    touch "${file}"
 
     if ! grep -q "^${user}" "${file}"; then
       echo "${user}:${start}:65536" | tee -a "${file}"
@@ -18,8 +20,10 @@ echo "Generating /etc/subgid for all users ..."
 while IFS= read -r line; do
   if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
     user="${line%%:*}"
-    file="/etc/subgid"
     start="$(( $(echo "$line" | cut -d: -f4) * 65536))"
+
+    file="/etc/subgid"
+    touch "${file}"
 
     if ! grep -q "^${user}" "${file}"; then
       echo "${user}:${start}:65536" | tee -a "${file}"
