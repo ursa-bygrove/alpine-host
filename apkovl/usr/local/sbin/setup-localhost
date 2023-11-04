@@ -28,7 +28,7 @@ ADMIN_USER='dk'
 export ADMIN_USER
 
 # Disable root login
-# FIXME passwd -l root || :
+passwd -l root || :
 
 # Apply setup patches
 echo
