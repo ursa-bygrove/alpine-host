@@ -58,8 +58,8 @@ if type -t docker > /dev/null; then
   addgroup live docker
   echo
   echo 'Enabling docker namespaces ... user: dockremap, group: dockremap'
-  addgroup -S dockremap
-  adduser -SDH -G dockremap dockremap
+  addgroup -S -g 500 dockremap
+  adduser -SDH -u 500 -G dockremap dockremap
   echo
   echo "Enabling cgroups v2 ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf

@@ -2,7 +2,7 @@
 
 echo "Generating /etc/subuid for all users ..."
 while IFS= read -r line; do
-  if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
+  if [[ "$(echo "$line" | cut -d: -f3)" -ge 500 ]]; then
     user="${line%%:*}"
     start="$(( $(echo "$line" | cut -d: -f3) * 65536))"
 
@@ -18,7 +18,7 @@ done < /etc/passwd
 echo
 echo "Generating /etc/subgid for all users ..."
 while IFS= read -r line; do
-  if [[ "$(echo "$line" | cut -d: -f3)" -gt 500 ]]; then
+  if [[ "$(echo "$line" | cut -d: -f3)" -ge 500 ]]; then
     user="${line%%:*}"
     start="$(( $(echo "$line" | cut -d: -f4) * 65536))"
 
