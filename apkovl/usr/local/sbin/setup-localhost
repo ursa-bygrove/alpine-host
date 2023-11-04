@@ -34,20 +34,16 @@ passwd -l root || :
 echo
 /root/apply-patches
 
-# Include all patched files when installing
-for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
-  lbu add "${file}" "${file}."*
-done
-
-# Include other files when installing
+# Include custom files when installing
 lbu add \
   /root/.exrc \
   /root/* \
   /usr/local
 
-echo
-echo "Running setup-alpine ..."
-/sbin/setup-alpine -e -f /root/setup-vultr.answers
+# Include patched files when installing
+for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
+  lbu add "${file}" "${file}."*
+done
 
 # Add production user
 if [ -n "${PRODUCTION_USER}" ]; then
@@ -57,7 +53,7 @@ if [ -n "${PRODUCTION_USER}" ]; then
     /etc/profile.d/color_prompt.sh
 fi
 
-# Setup containerization services
+# Configure containerization services
 if type -t docker > /dev/null; then
   addgroup live docker
   echo
@@ -71,7 +67,7 @@ if type -t docker > /dev/null; then
   /usr/local/sbin/setup-subids
 fi
 
-# Initialise local services
+# Configure services started on boot
 echo
 echo "Starting local services ..."
 for service in ${SERVICES}; do
@@ -80,3 +76,7 @@ for service in ${SERVICES}; do
   fi
 done
 unset service
+
+echo
+echo "Running setup-alpine ..."
+/sbin/setup-alpine -e -f /root/setup-vultr.answers
