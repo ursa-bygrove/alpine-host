@@ -12,7 +12,7 @@ set alpine_image ${alpine_mirror}/${alpine_branch}/releases/${alpine_arch}/netbo
 set console console=tty0
 set kernel_cmd modules=loop,squashfs quiet nomodeset
 set modloop modloop=${alpine_image}/modloop-${kernel_flavor}
-set apkovl apkovl=https://github.com/ursa-bygrove/alpine-host/releases/download/${apkovl_release}/apkovl.tar.gz
+set apkovl apkovl=https://github.com/ursa-bygrove/alpine-host/releases/download/${release_name}/apkovl.tar.gz
 
 kernel ${alpine_image}/vmlinuz-${kernel_flavor} ${kernel_cmd} ${alpine_repo} ${modloop} ${apkovl} ${console}
 initrd ${alpine_image}/initramfs-${kernel_flavor}
