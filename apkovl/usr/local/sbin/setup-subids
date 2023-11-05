@@ -1,32 +1,49 @@
-#!/bin/sh
+#!/bin/sh -e
 
-echo "Generating /etc/subuid for all users ..."
-while IFS= read -r line; do
-  if [[ "$(echo "$line" | cut -d: -f3)" -ge 500 ]]; then
+IFS=''
+
+subuid_file="/etc/subuid"
+subuid_temp="$(mktemp -ut subuid.XXXXXX)"
+
+subgid_file="/etc/subgid"
+subgid_temp="$(mktemp -ut subgid.XXXXXX)"
+
+touch "${subuid_file}"
+touch "${subgid_file}"
+
+while read -r line; do
+  uid="$(echo "${line}" | cut -d: -f3)"
+  gid="$(echo "${line}" | cut -d: -f4)"
+
+  if [[ "${uid}" -ge 500 ]]; then
     user="${line%%:*}"
-    start="$(( $(echo "$line" | cut -d: -f3) * 65536))"
+    start_uid="$(( ${uid} * 65536))"
+    start_gid="$(( ${gid} * 65536))"
 
-    file="/etc/subuid"
-    touch "${file}"
+    if grep -q "^${user}:" "${subuid_file}"; then
+      grep "^${user}:" "${subuid_file}" >> "${subuid_temp}"
+    else
+      echo "${user}:${uid}:1" >> "${subuid_temp}"
+      echo "${user}:${start_uid}:65536" >> "${subuid_temp}"
+    fi
 
-    if ! grep -q "^${user}" "${file}"; then
-      echo "${user}:${start}:65536" | tee -a "${file}"
+    if grep -q "^${user}" "${subgid_file}"; then
+      grep "^${user}:" "${subgid_file}" >> "${subgid_temp}"
+    else
+      echo "${user}:${gid}:1" >> "${subgid_temp}"
+      echo "${user}:${start_gid}:65536" >> "${subgid_temp}"
     fi
   fi
 done < /etc/passwd
+
+chown root:root "${subuid_file}" "${subgid_file}"
+chmod 0644 "$subuid_file" "${subgid_file}"
+
+echo "Rebuilding /etc/subuid for all users ... "
+cat "${subuid_temp}" | sort -t: -k1,1 -k2,2n | tee "${subuid_file}"
+rm -f "${subuid_temp}"
 
 echo
-echo "Generating /etc/subgid for all users ..."
-while IFS= read -r line; do
-  if [[ "$(echo "$line" | cut -d: -f3)" -ge 500 ]]; then
-    user="${line%%:*}"
-    start="$(( $(echo "$line" | cut -d: -f4) * 65536))"
-
-    file="/etc/subgid"
-    touch "${file}"
-
-    if ! grep -q "^${user}" "${file}"; then
-      echo "${user}:${start}:65536" | tee -a "${file}"
-    fi
-  fi
-done < /etc/passwd
+echo "Rebuilding /etc/subgid for all users ..."
+cat "${subgid_temp}" | sort -t: -k1,1 -k2,2n | tee "${subgid_file}"
+rm -f "${subgui_temp}"
