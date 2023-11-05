@@ -1,4 +1,4 @@
 {
     "ip": "127.0.0.1",
-    "userns-remap": "dockremap"
+    "userns-remap": "default"
 }

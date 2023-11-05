@@ -63,9 +63,16 @@ done
 # Configure containerization service
 if type -t docker > /dev/null; then
   echo
-  echo 'Enabling docker namespaces ... user: dockremap, group: dockremap'
+  echo 'Adding docker remap user ... dockremap'
   addgroup -S -g 500 dockremap
   adduser -SDH -u 500 -G dockremap dockremap
+
+  echo
+  echo 'Update docker daemon config ...'
+  sed -i \
+    -E "s/(\"userns-remap\"): \"default\"/\1 \"${SSH_USER}:docker\"/" \
+    /etc/docker/daemon.json
+
   echo
   echo "Enabling cgroups v2 ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
