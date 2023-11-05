@@ -29,32 +29,25 @@ printc() {
 }
 
 color_prompt() {
-  local host=''
-  case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
-    ${PS1_RED_HOSTS:=localhost})
-      host="$(printc red '\h')"
-      ;;
-    ${PS1_GREEN_HOSTS:=*.local})
-      host="$(printc green '\h')"
-      ;;
-    *)
-      host="$(printc yellow '\h')"
-  esac
+  if [ -z "${PS1_HOST_COLOR}" ]; then
+    case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
+      localhost) PS1_HOST_COLOR='red';;
+      *.local) PS1_HOST_COLOR='green';;
+      *) PS1_HOST_COLOR='yellow';;
+    esac
+  fi
+  local host="$(printc "${PS1_HOST_COLOR}" '\h')"
 
-  local user=''
-  case "${USER}" in
-    ${PS1_RED_USERS:=root})
-      user="$(printc red "\u")"
-      ;;
-    ${PS1_GREEN_USERS})
-      user="$(printc green "\u")"
-      ;;
-    *)
-      user="$(printc yellow "\u")"
-      ;;
-  esac
+  if [ -z "${PS1_USER_COLOR}" ]; then
+    case "${USER}" in
+      root) PS1_USER_COLOR='red';;
+      guest|nobody) PS1_USER_COLOR='green';;
+      *) PS1_USER_COLOR='yellow';;
+    esac
+  fi
+  local user="$(printc "${PS1_USER_COLOR}" '\u')"
 
-  PS1="${user}@${host}:\w \\$ "
+  echo "${user}@${host}:\w \\$"
 }
 
-color_prompt
+PS1='$(color_prompt) '
