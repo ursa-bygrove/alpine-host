@@ -23,39 +23,45 @@ apk add \
   tmux
 
 SERVICES="crond docker ip6tables iptables local"
-PRODUCTION_USER='live'
-ADMIN_USER='dk'
-export ADMIN_USER
+export SSH_USER='dk'
+export OTHER_USERS='live'
+
+PS1_RED_USERS='live'
+PS1_GREEN_USERS="${SSH_USER}"
+
+# Load setup-alpine answers file
+. /root/setup-vultr.answers
 
 # Disable root login
 passwd -l root || :
+
+# Configure RED users
+sed -i \
+  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='red';;)/\1|${PS1_RED_USERS}) \2/"
+  /etc/profile.d/color_prompt.sh
+
+# Configure GREEN users
+sed -i \
+  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='green';;)/\1|${PS1_GREEN_USERS}) \2/"
+  /etc/profile.d/color_prompt.sh
 
 # Apply setup patches
 echo
 /root/apply-patches
 
-# Include custom files when installing
+# Include custom files when installing to disk
 lbu add \
   /root/.exrc \
   /root/* \
   /usr/local
 
-# Include patched files when installing
+# Include patched files when installing to disk
 for file in $(awk '$1=="+++" { print $2 }' /root/*.patch); do
   lbu add "${file}" "${file}."*
 done
 
-# Add production user
-if [ -n "${PRODUCTION_USER}" ]; then
-  adduser -D -s /bin/ash "${PRODUCTION_USER}"
-  sed -i \
-    -E "s/(PS1_RED_USERS:=)(root})/\1${PRODUCTION_USER},\2/" \
-    /etc/profile.d/color_prompt.sh
-fi
-
-# Configure containerization services
+# Configure containerization service
 if type -t docker > /dev/null; then
-  addgroup live docker
   echo
   echo 'Enabling docker namespaces ... user: dockremap, group: dockremap'
   addgroup -S -g 500 dockremap
