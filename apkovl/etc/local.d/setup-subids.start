@@ -3,4 +3,4 @@
 exec > /dev/console
 exec 2>&1
 
-/usr/local/sbin/setup-subids
+/usr/local/sbin/setup-subids > /dev/null
