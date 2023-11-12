@@ -10,6 +10,10 @@ if [ ! -d "${XDG_CONFIG_HOME}/.git" ]; then
     else
       echo "Command not found -- git" >&2
     fi
+    find "${XDG_CONFIG_HOME}" \
+      -name '.??*' ! -name '.git' \
+      -mindepth 1 -maxdepth 1 \
+      -exec ln -sv {} \;
   fi
 fi
 
