@@ -9,7 +9,11 @@ if [ ! -d "${XDG_CONFIG_HOME}/.git" ]; then
       git clone "${XDG_CONFIG_REPO}" "${XDG_CONFIG_HOME}"
     elif type -t docker > /dev/null; then
       docker pull alpine/git
-      docker run --rm -v "${XDG_CONFIG_HOME%/*}":/git alpine/git \
+      docker run --rm \
+        -e SSH_AUTH_SOCK=/root/.ssh/auth_sock \
+        -v "${HOME}":/root \
+        -v /tmp:/tmp \
+        -v "${XDG_CONFIG_HOME%/*}":/git alpine/git \
         clone "${XDG_CONFIG_REPO}" "${XDG_CONFIG_HOME##*/}"
     fi
   fi
