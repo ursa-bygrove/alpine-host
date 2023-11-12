@@ -31,18 +31,18 @@ printc() {
 color_prompt() {
   if [ -z "${PS1_HOST_COLOR}" ]; then
     case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
-      localhost) PS1_HOST_COLOR='red';;
-      *.local) PS1_HOST_COLOR='green';;
-      *) PS1_HOST_COLOR='yellow';;
+      localhost) PS1_HOST_COLOR='red' ;;
+      *.local) PS1_HOST_COLOR='green' ;;
+      *) PS1_HOST_COLOR='yellow' ;;
     esac
   fi
   local host="$(printc "${PS1_HOST_COLOR}" '\h')"
 
   if [ -z "${PS1_USER_COLOR}" ]; then
     case "${USER}" in
-      root) PS1_USER_COLOR='red';;
-      guest|nobody) PS1_USER_COLOR='green';;
-      *) PS1_USER_COLOR='yellow';;
+      root) PS1_USER_COLOR='red' ;;
+      guest|nobody) PS1_USER_COLOR='green' ;;
+      *) PS1_USER_COLOR='yellow' ;;
     esac
   fi
   local user="$(printc "${PS1_USER_COLOR}" '\u')"
