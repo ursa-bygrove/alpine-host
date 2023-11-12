@@ -22,7 +22,7 @@ apk add \
   patch \
   tmux
 
-SERVICES="crond docker ip6tables iptables local"
+SERVICES="crond ip6tables iptables local"
 export SSH_USER='dk'
 
 # Load setup-alpine answers file
@@ -53,6 +53,7 @@ if type -t docker > /dev/null; then
   addgroup -S -g 450 dockremap
   adduser -SDH -u 450 -G dockremap dockremap
   adduser -SDH -u 451 -G docker docker
+  /usr/local/sbin/setup-subids
 
   echo
   echo 'Update docker daemon config ...'
@@ -63,8 +64,9 @@ if type -t docker > /dev/null; then
   echo
   echo "Enabling cgroups v2 ..."
   sed -i -E 's/#(rc_cgroup_mode)=".*"/\1="unified"/' /etc/rc.conf
-  SERVICES="${SERVICES} cgroups"
-  /usr/local/sbin/setup-subids
+
+  # Start docker services
+  SERVICES="${SERVICES} cgroups docker"
 fi
 
 # Configure services started on boot
@@ -77,9 +79,9 @@ for service in ${SERVICES}; do
 done
 unset service
 
+# Enable future local.d services
+chmod 0755 /etc/local.d/*.{start,stop}
+
 echo
 echo "Running setup-alpine ..."
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
-
-# Enable future local.d services
-chmod 0755 /etc/local.d/*.{start,stop}
