@@ -42,11 +42,11 @@ color_prompt() {
     case "${USER}" in
       root|live|production) PS1_USER_COLOR='red' ;;
       *) if [ -n "${SSH_CONNECTION}" ]; then
-	  PS1_USER_COLOR='green' ;;
+	  PS1_USER_COLOR='green'
         elif echo "$(tty)" | grep -q -E "/dev/(console|tty[0-9])" ; then
-	  PS1_USER_COLOR='green' ;;
+	  PS1_USER_COLOR='green'
 	else
-	  PS1_USER_COLOR='yellow' ;;
+	  PS1_USER_COLOR='yellow'
 	fi
     esac
   fi
