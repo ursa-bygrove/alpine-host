@@ -47,4 +47,4 @@ rm -f "${subuid_temp}"
 echo
 echo "Rebuilding /etc/subgid for all users ..."
 cat "${subgid_temp}" | sort -t: -k1,1 -k2,2n | tee "${subgid_file}"
-rm -f "${subgui_temp}"
+rm -f "${subgid_temp}"
