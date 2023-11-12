@@ -1,3 +1,6 @@
 #!/bin/sh
 
+exec > /dev/console
+exec 2>&1
+
 find /tmp -mindepth 1 -delete
