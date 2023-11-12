@@ -14,3 +14,16 @@ for user in ${OTHER_USERS}; do
   addgroup "${user}" docker
 done
 unset user
+
+# Configure RED users
+sed -i \
+  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='red';;)/\1|${PS1_RED_USERS}) \2/" \
+  /etc/profile.d/color_prompt.sh
+
+# Configure GREEN users
+sed -i \
+  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='green';;)/\1|${PS1_GRN_USERS}) \2/" \
+  /etc/profile.d/color_prompt.sh
+
+# Delete this file after it has been run once
+rm -f "${0}"

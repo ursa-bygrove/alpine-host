@@ -24,10 +24,6 @@ apk add \
 
 SERVICES="crond docker ip6tables iptables local"
 export SSH_USER='dk'
-export OTHER_USERS='live'
-
-PS1_RED_USERS='live'
-PS1_GRN_USERS="${SSH_USER}"
 
 # Load setup-alpine answers file
 . /root/setup-vultr.answers
@@ -35,19 +31,12 @@ PS1_GRN_USERS="${SSH_USER}"
 # Disable root login
 passwd -l root || :
 
-# Configure RED users
-sed -i \
-  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='red';;)/\1|${PS1_RED_USERS}) \2/" \
-  /etc/profile.d/color_prompt.sh
-
-# Configure GREEN users
-sed -i \
-  -E "s/([[:alnum:]|]+)) (PS1_USER_COLOR='green';;)/\1|${PS1_GRN_USERS}) \2/" \
-  /etc/profile.d/color_prompt.sh
-
 # Apply setup patches
 echo
 /root/apply-patches
+
+# Enable 1st-boot servise
+chmod 0755 /etc/local.d/1st-boot.start
 
 # Include custom files when installing to disk
 lbu add \
@@ -63,9 +52,10 @@ done
 # Configure containerization service
 if type -t docker > /dev/null; then
   echo
-  echo 'Adding docker remap user ... dockremap'
-  addgroup -S -g 500 dockremap
-  adduser -SDH -u 500 -G dockremap dockremap
+  echo 'Updating docker users ...'
+  addgroup -S -g 450 dockremap
+  adduser -SDH -u 450 -G dockremap dockremap
+  adduser -SDH -u 451 -G docker docker
 
   echo
   echo 'Update docker daemon config ...'
