@@ -52,8 +52,13 @@ if type -t docker > /dev/null; then
   echo 'Updating docker users ...'
   addgroup -S -g 450 dockremap
   adduser -SDH -u 450 -G dockremap dockremap
-  adduser -SDH -u 451 -G docker docker
-  /usr/local/sbin/setup-subids
+
+  # Add production and staging users
+  for user in live; do
+    adduser -D -s /bin/ash "${user}"
+    addgroup "${user}" docker
+  done
+  unset user
 
   echo
   echo 'Update docker daemon config ...'
@@ -75,14 +80,12 @@ echo "Starting local services ..."
 for service in ${SERVICES}; do
   if rc-service --exists $service; then
     rc-update add $service default
+    rc-service $service start
   fi
 done
 unset service
 
-# Enable future local.d services
-chmod -f 0755 /etc/local.d/*.start
-chmod -f 0755 /etc/local.d/*.stop
-
 echo
 echo "Running setup-alpine ..."
+# setup-alpine enables and runs all configure local.d scripts
 /sbin/setup-alpine -e -f /root/setup-vultr.answers
