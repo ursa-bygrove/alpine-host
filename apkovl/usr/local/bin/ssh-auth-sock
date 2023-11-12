@@ -28,6 +28,6 @@ fi
 # Describe the link or exit
 if [ -S "${symlink}" ]; then
   echo "${symlink} -> $(readlink "${symlink}")"
-echo
+else
   echo "SSH Auth Socket not found -- ${symlink}" >&2
 fi
