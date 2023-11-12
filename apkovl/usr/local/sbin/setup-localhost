@@ -80,7 +80,6 @@ echo "Starting local services ..."
 for service in ${SERVICES}; do
   if rc-service --exists $service; then
     rc-update add $service default
-    rc-service $service start
   fi
 done
 unset service
