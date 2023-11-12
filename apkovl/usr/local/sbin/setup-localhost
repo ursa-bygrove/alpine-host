@@ -80,7 +80,8 @@ done
 unset service
 
 # Enable future local.d services
-chmod 0755 /etc/local.d/*.{start,stop}
+chmod -f 0755 /etc/local.d/*.start
+chmod -f 0755 /etc/local.d/*.stop
 
 echo
 echo "Running setup-alpine ..."
