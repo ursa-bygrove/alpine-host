@@ -36,14 +36,7 @@ export SETUP_APKREPOS=false
 APKREPOSOPTS=""
 
 # Create admin and unprivileged users
-add_other_users() {
-    for user in ${OTHER_USERS}; do
-        adduser -D -s /bin/ash "${user}"
-        addgroup "${user}" docker
-    done
-    unset user
-}
-USEROPTS="-a -g audio,video,netdev,docker -s /bin/ash ${SSH_USER} && add_other_users"
+USEROPTS="-a -g audio,video,netdev,docker -s /bin/ash ${SSH_USER}"
 USERSSHKEY="${VULTRAPI}/public-keys"
 
 # Install Openssh

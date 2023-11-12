@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+exec > /dev/console
+exec 2>&1
+
+OTHER_USERS='live'
+
+PS1_RED_USERS='live'
+PS1_GRN_USERS="${SSH_USER}"
+
+# Add production and staging users
+for user in ${OTHER_USERS}; do
+  adduser -D -s /bin/ash "${user}"
+  addgroup "${user}" docker
+done
+unset user
