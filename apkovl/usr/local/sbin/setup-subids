@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 IFS=''
+map_users="docker dockremap"
 
 subuid_file="/etc/subuid"
 subuid_temp="$(mktemp -ut subuid.XXXXXX)"
@@ -12,11 +13,11 @@ touch "${subuid_file}"
 touch "${subgid_file}"
 
 while read -r line; do
+  user="${line%%:*}"
   uid="$(echo "${line}" | cut -d: -f3)"
   gid="$(echo "${line}" | cut -d: -f4)"
 
-  if [[ "${uid}" -ge 500 ]]; then
-    user="${line%%:*}"
+  if [[ " ${users} " == *" ${user} "* ]] || [[ "${uid}" -ge 500 ]]; then
     start_uid="$(( ${uid} * 65536))"
     start_gid="$(( ${gid} * 65536))"
 
