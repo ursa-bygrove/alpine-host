@@ -60,7 +60,7 @@ if type -t docker > /dev/null; then
   echo
   echo 'Update docker daemon config ...'
   sed -i \
-    -E "s/(\"userns-remap\"): \"default\"/\1 \"${SSH_USER}:docker\"/" \
+    -E "s/(\"userns-remap\"): \"default\"/\1 \"docker:docker\"/" \
     /etc/docker/daemon.json
 
   echo
