@@ -14,6 +14,7 @@ apk add \
   docker-cli-compose \
   docs \
   drill \
+  git \
   ip6tables \
   iptables \
   iproute2 \
