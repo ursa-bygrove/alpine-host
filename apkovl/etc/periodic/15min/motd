@@ -25,7 +25,6 @@ Uptime  $(_uptime)
 $(printf "%-20s${resources#*s}" 'Resources:' 'Total' 'Used' 'Free')
 $(free -h | awk -v row="${resources}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')
 $(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 && ($1!="/dev/mapper/root" || ($1=="/dev/mapper/root" && $6=="/")) { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
-$(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
 $(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
 
 $(printf "%-12s %19s${connections#*%*%*s}" 'Connections:' 'Local' 'Remote')
