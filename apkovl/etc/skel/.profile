@@ -13,7 +13,7 @@ if [ ! -d "${XDG_CONFIG_HOME}/.git" ]; then
     find "${XDG_CONFIG_HOME}" \
       -name '.??*' ! -name '.git' \
       -mindepth 1 -maxdepth 1 \
-      -exec ln -sv {} \;
+      -exec ln -sf {} \;
   fi
 fi
 
