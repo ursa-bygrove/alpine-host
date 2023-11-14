@@ -17,7 +17,7 @@ _ip() {
 resources='  %-18s %11s %11s %11s      %s\n'
 connections='  %-6s %23s %23s      %s\n'
 
-cat << EOF > /etc/motd
+cat << EOF | sed '/./,/^$/!d' | tee /etc/motd
 $(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))
 Uptime  $(_uptime)
     at  $(date)
