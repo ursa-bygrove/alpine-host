@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+sleep $(expr $RANDOM % 7200)
+
+gem update --system
+gem update
+gem cleanup
