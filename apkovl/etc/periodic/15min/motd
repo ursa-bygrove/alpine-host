@@ -18,18 +18,18 @@ resources='  %-18s %11s %11s %11s      %s\n'
 connections='  %-6s %23s %23s      %s\n'
 
 cat << EOF | sed '/./,/^$/!d' | tee /etc/motd
-$(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))
-Uptime  $(_uptime)
-    at  $(date)
+$(printf "\e[1m")$(awk -F= '$1=="PRETTY_NAME" { print $2 ;}' /etc/os-release | tr -d '"') ($(uname -r))$(printf "\e[0m")
+$(printf "\e[1m")Uptime$(printf "\e[0m")  $(_uptime)
+$(printf "\e[1m")    at$(printf "\e[0m")  $(date)
 
-$(printf "%-20s${resources#*s}" 'Resources:' 'Total' 'Used' 'Free')
-$(free -h | awk -v row="${resources}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')
-$(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 && ($1!="/dev/mapper/root" || ($1=="/dev/mapper/root" && $6=="/")) { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
-$(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 65) { note="" } else { note=$5 " full" }; printf row, $NF, $2, $3, $4, note }')
+$(printf "%-20s${resources#*s}" "Resources:" 'Total' 'Used' 'Free')
+$(printf "\e[1;90m")$(free -h | awk -v row="${resources}" 'FNR>=2 { printf row, substr($1, 1, length($1)-1), $2, $3, $4 }')$(printf "\e[0m")
+$(df -ht ext4 | awk -v row="${resources}" 'FNR>=2 && ($1!="/dev/mapper/root" || ($1=="/dev/mapper/root" && $6=="/")) { if (int($5) >= 85) { color="\e[1;91m"; note=$5 } else if (int($5) >= 70) { color="\e[1;33m"; note=$5 } else { note="" }; printf color row "\e[0m", $NF, $2, $3, $4, note }')
+$(df -ht tmpfs | awk -v row="${resources}" 'FNR>=2 { if (int($5) < 1) { note="" } else { note="\e[1;91m" $5 "\e[0m" }; printf row, $NF, $2, $3, $4, note }')
 
-$(printf "%-12s %19s${connections#*%*%*s}" 'Connections:' 'Local' 'Remote')
+$(printf "%-12s %19s${connections#*%*%*s}" "Connections:" 'Local' 'Remote')
 $(ss -Htunl | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
-$(ss -Htun | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')
+$(printf "\e[1;90m")$(ss -Htun | awk -v row="${connections}" '{ printf row, $2, $5, $6 }')$(printf "\e[0m")
 
 Average load:
   $(cat /proc/loadavg | awk '{ print "1 min - " $1 "%  5 min - " $2 "%  15 min - " $3 "%" }')
