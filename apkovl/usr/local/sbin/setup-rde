@@ -1,4 +1,6 @@
 #!/bin/sh -e
+#
+# Remote Development Environment
 
 if [ $(id -u) -ne 0 ]; then
   echo "ERROR: This script can only be run by root!" >&2
@@ -11,18 +13,18 @@ echo "Installing basic environment ..."
 apk add \
   docs mandoc curl \
   git github-cli delta lazygit lazydocker \
-  ripgrep fd sd xh jq yq bottom bandwhich hyperfine \
+  ripgrep fd sd@edge xh jq yq bottom bandwhich hyperfine \
   terraform
 
 echo "Installing bash and tools ..."
 apk add bash bash-completion shellcheck bats shellspec
 
 echo "Installing neovim and tools ..."
-apk add neovim g++ libstdc++ npm lua-language-server tree-sitter-cli
+apk add neovim g++ libstdc++ npm lua-language-server@edge tree-sitter-cli
 npm install -g bash-language-server
 
 echo "Installing ruby and gems ..."
-apk add ruby ruby-rdoc ruby-dev make
+apk add ruby ruby-rdoc ruby-dev make zlib-dev libffi-dev openssl-dev yaml-dev
 gem update --system
 gem update
 gem cleanup
