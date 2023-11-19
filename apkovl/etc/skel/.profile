@@ -6,7 +6,7 @@ if [ ! -d "${XDG_CONFIG_HOME}/.git" ]; then
   fi
   if [ -n "${XDG_CONFIG_REPO}" ]; then
     if type -t git > /dev/null; then
-      git clone "${XDG_CONFIG_REPO}" "${XDG_CONFIG_HOME}"
+      git clone --recursive "${XDG_CONFIG_REPO}" "${XDG_CONFIG_HOME}"
     else
       echo "Command not found -- git" >&2
     fi
