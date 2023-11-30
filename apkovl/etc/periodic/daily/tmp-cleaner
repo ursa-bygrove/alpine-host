@@ -1,6 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-sleep $(expr $RANDOM % 7200)
-exec find /tmp -atime +1 -delete

@@ -1,9 +1,10 @@
 #!/bin/sh
 
 set -eu
+sleep $(( $RANDOM % 7200 + 7200 ))
 
-sleep $(expr $RANDOM % 7200)
-
-gem update --system
-gem update
-gem cleanup
+if type gem > /dev/null; then
+  gem update --system
+  gem update
+  gem cleanup
+fi
