@@ -55,4 +55,4 @@ color_prompt() {
   echo "${user}@${host}:\w \\$"
 }
 
-PS1='$(color_prompt) '
+PS1="$(color_prompt) "
