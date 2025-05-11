@@ -55,9 +55,7 @@ ${IPT} -A INPUT -m conntrack --ctstate INVALID -j DROP
 
 if [ "${IPT##*/}" = "iptables" ]; then
   # ICMP neighbour discovery (NDP) and related messages
-  ${IPT} -A INPUT -p icmp --icmp-type redirect \
-    -m addrtype --src-type linklocal \
-    -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type redirect -j ACCEPT
 
   # Allow ICMP Packet PMTU discovery and Time Exceeded (traceroute)
   ${IPT} -A INPUT -p icmp --icmp-type fragmentation-needed -j ACCEPT
@@ -66,19 +64,19 @@ if [ "${IPT##*/}" = "iptables" ]; then
 else
   # ICMPv6 neighbour discovery (NDP) and related messages
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type router-solicitation \
-    -m addrtype --src-type linklocal \
+    -s fe80::/10 \
     -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type router-advertisement \
-    -m addrtype --src-type linklocal \
+    -s fe80::/10 \
     -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type neighbor-solicitation \
-    -m addrtype --src-type linklocal \
+    -s fe80::/10 \
     -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type neighbor-advertisement \
-    -m addrtype --src-type linklocal \
+    -s fe80::/10 \
     -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type redirect \
-    -m addrtype --src-type linklocal \
+    -s fe80::/10 \
     -j ACCEPT
 
   # Allow ICMPv6 PMTU discovery and Time Exceeded (traceroute)
