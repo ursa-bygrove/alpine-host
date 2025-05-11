@@ -79,7 +79,6 @@ else
     -j ACCEPT
 
   # Allow ICMPv6 PMTU discovery and Time Exceeded (traceroute)
-  ${IPT} -A INPUT -p icmpv6 --icmpv6-type fragmentation-needed -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type packet-too-big -j ACCEPT
   ${IPT} -A INPUT -p icmpv6 --icmpv6-type time-exceeded -j ACCEPT
 fi
