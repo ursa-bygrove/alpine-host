@@ -59,7 +59,6 @@ if [ "${IPT##*/}" = "iptables" ]; then
 
   # Allow ICMP Packet PMTU discovery and Time Exceeded (traceroute)
   ${IPT} -A INPUT -p icmp --icmp-type fragmentation-needed -j ACCEPT
-  ${IPT} -A INPUT -p icmp --icmp-type packet-too-big -j ACCEPT
   ${IPT} -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
 else
   # ICMPv6 neighbour discovery (NDP) and related messages
