@@ -1,4 +1,4 @@
-printc() {
+printc() (
   : "${1:?Missing argument -- color name}"
   : "${2:?Missing argument -- string to print}"
 
@@ -24,35 +24,38 @@ printc() {
 	EOS
   }
 
-  local c="$(echo "${1}" | tr -d '[[:space:]]_-' | tr '[[:upper:]]' '[[:lower:]]')"
-  printf "$(colors $c)%s\e[0m" "${2}";
-}
+  c="$(echo "${1}" | tr -d '[:space:]_-' | tr '[:upper:]' '[:lower:]')"
+  printf "\[$(colors "${c}")\]%s\[\e[0m\]" "${2}";
+)
 
-color_prompt() {
-  if [ -z "${PS1_HOST_COLOR}" ]; then
-    case "$({ hostname -f || hostname -s; } 2>/dev/null)" in
-      localhost) PS1_HOST_COLOR='red' ;;
-      *.local) PS1_HOST_COLOR='green' ;;
-      *) PS1_HOST_COLOR='yellow' ;;
-    esac
-  fi
-  local host="$(printc "${PS1_HOST_COLOR}" '\h')"
+color_prompt() (
+  # Set user color in shell prompt
+  case "${USER}" in
+    root|live|production)
+      user="$(printc "red" '\u')"
+      ;;
+    *)
+      if [ "$(initial_process_uid)" -eq "$(id -u "${USER}")" ]; then
+	user="$(printc "green" '\u')"
+      else
+	user="$(printc "yellow" '\u')"
+      fi
+  esac
 
-  if [ -z "${PS1_USER_COLOR}" ]; then
-    case "${USER}" in
-      root|live|production) PS1_USER_COLOR='red' ;;
-      *) if [ -n "${SSH_CONNECTION}" ]; then
-	  PS1_USER_COLOR='green'
-        elif echo "$(tty)" | grep -q -E "/dev/(console|tty[0-9])" ; then
-	  PS1_USER_COLOR='green'
-	else
-	  PS1_USER_COLOR='yellow'
-	fi
-    esac
-  fi
-  local user="$(printc "${PS1_USER_COLOR}" '\u')"
+  # Set host color in shell prompt
+  case "$(hostname -f 2>/dev/null)" in
+    localhost)
+      host="$(printc "red" '\h')"
+      ;;
+    *)
+      if [ -n "${SSH_CONNECTION}" ]; then
+	host="$(printc "yellow" '\h')"
+      else
+	host="$(printc "green" '\h')"
+      fi
+  esac
 
-  echo "${user}@${host}:\w \\$"
-}
+  echo "${user}@${host}:\w \\$ "
+)
 
 PS1="$(color_prompt) "
