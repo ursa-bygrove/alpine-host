@@ -41,32 +41,74 @@ ${IPT} -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # Allow internal network (eth1) to access external (eth0)
 # ${IPT} -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
-# Drop invalid packets
+# Log then drop invalid packets
+${IPT} -A INPUT  -m conntrack --ctstate INVALID \
+  -m limit --limit 5/minute --limit-burst 10 \
+  -j LOG --log-prefix "${IPT}-Invalid: " --log-level warning
 ${IPT} -A INPUT -m conntrack --ctstate INVALID -j DROP
+
+# Internet Control Message Protocol (ICMP) rules
+# ----------------------------------------------
+
+if [ "${IPT##*/}" = "iptables" ]; then
+  # ICMP neighbour discovery (NDP) and related messages
+  ${IPT} -A INPUT -p icmp --icmp-type router-solicitation -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type router-advertisement -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type neighbor-solicitation -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type neighbor-advertisement -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type redirect -j ACCEPT
+
+  # Allow ICMP Packet PMTU discovery and Time Exceeded (traceroute)
+  ${IPT} -A INPUT -p icmp --icmp-type fragmentation-needed -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type packet-too-big -j ACCEPT
+  ${IPT} -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
+else
+  # ICMPv6 neighbour discovery (NDP) and related messages
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type router-solicitation -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type router-advertisement -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type neighbor-solicitation -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type neighbor-advertisement -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type redirect -j ACCEPT
+
+  # Allow ICMPv6 PMTU discovery and Time Exceeded (traceroute)
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type fragmentation-needed -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+  ${IPT} -A INPUT -p icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+fi
 
 # Application-specific rules
 # --------------------------
 # - https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands#generally-useful-rules
+# - https://jrs-s.net/2014/08/22/allowing-traceroutes-to-succeed-with-iptables/
 
 # Allow outgoing DNS connections over TCP and UDP
 ${IPT} -A OUTPUT -p udp --dport 53 -m conntrack --ctstate NEW -j ACCEPT
 ${IPT} -A OUTPUT -p tcp --dport 53 -m conntrack --ctstate NEW -j ACCEPT
 
-# Allow incoming Ping and Traceroute connections
-# https://jrs-s.net/2014/08/22/allowing-traceroutes-to-succeed-with-iptables/
-[ "${IPT##*/}" = "iptables" ] \
-  && ${IPT} -A INPUT -p icmp --icmp-type 8 -j ACCEPT \
-  || ${IPT} -A INPUT -p icmpv6 --icmpv6-type 8 -j ACCEPT
+# Allow Ping and Traceroute connections
+if [ "${IPT##*/}" = "iptables" ]; then
+  ${IPT} -A INPUT  -p icmp --icmp-type echo-request -j ACCEPT
+  ${IPT} -A OUTPUT -p icmp --icmp-type echo-request -m conntrack --ctstate NEW -j ACCEPT
+else
+  ${IPT} -A INPUT  -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+  ${IPT} -A OUTPUT -p icmpv6 --icmpv6-type echo-request -m conntrack --ctstate NEW -j ACCEPT
+fi
 ${IPT} -A INPUT -p udp --dport 33434:33523 -j REJECT
 
 # Allow outgoing NTP connections
 ${IPT} -A OUTPUT -p udp --dport 123 -m conntrack --ctstate NEW -j ACCEPT
 
 # Allow outgoing DHCP connections
-${IPT} -A OUTPUT -p udp -m multiport --dports 67,68 -m conntrack --ctstate NEW -j ACCEPT
+if [ "${IPT##*/}" = "iptables" ]; then
+  ${IPT} -A OUTPUT -p udp --sport 68 --dport 67 -m conntrack --ctstate NEW -j ACCEPT
+else
+  ${IPT} -A OUTPUT -p udp --sport 546 --dport 547 -m conntrack --ctstate NEW -j ACCEPT
+fi
 
 # Allow incoming and outgoing SSH connections
-${IPT} -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
+${IPT} -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW \
+  -m limit --limit 3/minute --limit-burst 6 \
+  -j ACCEPT
 ${IPT} -A OUTPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
 
 # Allow incoming and outgoing HTTP/HTTPS connections
