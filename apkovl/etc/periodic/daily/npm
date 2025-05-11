@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -eu
-sleep $(( $RANDOM % 7200 + 7200 ))
+sleep 2400
 
 if type npm > /dev/null; then
   # npm install -g npm # updated by apk
