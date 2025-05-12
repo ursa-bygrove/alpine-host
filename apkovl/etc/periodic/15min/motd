@@ -33,5 +33,4 @@ $(printf "\e[1;90m")$(ss -Htun | awk -v row="${connections}" '{ printf row, $2, 
 
 Average load:
   $(cat /proc/loadavg | awk '{ print "1 min - " $1 "%  5 min - " $2 "%  15 min - " $3 "%" }')
-
 EOF
