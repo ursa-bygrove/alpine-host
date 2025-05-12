@@ -35,10 +35,10 @@ color_prompt() (
       user="$(printc "red" '\u')"
       ;;
     *)
-      if [ "$(initial_process_uid)" -eq "$(id -u "${USER}")" ]; then
-	user="$(printc "green" '\u')"
+      if [ -n "${DOAS_USER}" ]; then
+        user="$(printc "yellow" '\u')"
       else
-	user="$(printc "yellow" '\u')"
+        user="$(printc "green" '\u')"
       fi
   esac
 
@@ -49,9 +49,9 @@ color_prompt() (
       ;;
     *)
       if [ -n "${SSH_CONNECTION}" ]; then
-	host="$(printc "yellow" '\h')"
+        host="$(printc "yellow" '\h')"
       else
-	host="$(printc "green" '\h')"
+        host="$(printc "green" '\h')"
       fi
   esac
 
