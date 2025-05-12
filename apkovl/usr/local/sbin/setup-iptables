@@ -55,7 +55,8 @@ ${IPT} -A INPUT -m conntrack --ctstate INVALID -j DROP
 
 if [ "${IPT##*/}" = "iptables" ]; then
   # ICMP neighbour discovery (NDP) and related messages
-  ${IPT} -A INPUT -p icmp --icmp-type redirect -j ACCEPT
+  CIDR="$(ip -4 addr show dev eth0 | awk '/inet /{print $2; exit}')"
+  ${IPT} -A INPUT -p icmp --icmp-type redirect -s "${CIDR}" -j ACCEPT
 
   # Allow ICMP Packet PMTU discovery and Time Exceeded (traceroute)
   ${IPT} -A INPUT -p icmp --icmp-type fragmentation-needed -j ACCEPT
